@@ -6,7 +6,9 @@ Release:	2.2
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/tar/HDF%{version}.tar.gz
+# Source0-md5:	f90de772dac93195def4a585da176db2
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
+# Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-system-libs.patch
 Patch1:		%{name}-strdup.patch
 Patch2:		%{name}-shared.patch
