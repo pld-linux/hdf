@@ -90,6 +90,8 @@ Narzêdzia do konwersji z i to formatu HDF.
 
 %build
 install -m755 /usr/share/libtool/config.{guess,sub} .
+install -m755 /usr/share/libtool/config.{guess,sub} hdf/fmpool
+install -m755 /usr/share/libtool/config.{guess,sub} hdf/jpeg
 ./configure %{_target_platform} \
 	--prefix=%{_prefix} --exec-prefix=%{_exec_prefix}
 
