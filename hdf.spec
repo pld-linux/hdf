@@ -11,6 +11,7 @@ Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-opt.patch
+Patch2:		%{name}-morearchs.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -90,6 +91,7 @@ Narzêdzia do konwersji z i to formatu HDF.
 %setup -q -n HDF%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %ifarch ppc ppc64 sparc sparcv9 sparc64
 %{__perl} -pi -e 's/^SWAP.*$/SWAP=/' config/mh-linux
