@@ -5,7 +5,7 @@ Version:	4.2r0
 Release:	1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
-Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/tar/HDF%{version}.tar.gz
+Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/src/HDF%{version}.tar.gz
 # Source0-md5:	3cede01c62864f5a902ef8e06a525aae
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
