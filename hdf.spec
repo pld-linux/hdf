@@ -4,13 +4,6 @@ Name:		hdf
 Version:	4.1r4
 Release:	1
 Group:		Libraries
-Group(de):	Libraries
-Group(es):	Bibliotecas
-Group(fr):	Librairies
-Group(pl):	Biblioteki
-Group(pt_BR):	Bibliotecas
-Group(ru):	Библиотеки
-Group(uk):	Б╕бл╕отеки
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/tar/HDF%{version}.tar.gz
 Patch0:		%{name}-system-libs.patch
@@ -53,13 +46,6 @@ zestawСw danych itp.
 Summary:	HDF library development package
 Summary(pl):	Pliki nagЁСwkowe biblioteki HDF
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	Разработка/Библиотеки
-Group(uk):	Розробка/Б╕бл╕отеки
 Requires:	%{name} = %{version}
 
 %description devel
@@ -72,13 +58,6 @@ Pliki nagЁСwkowe biblioteki HDF.
 Summary:	HDF static library
 Summary(pl):	Statyczna biblioteka HDF
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	Разработка/Библиотеки
-Group(uk):	Розробка/Б╕бл╕отеки
 Requires:	%{name}-devel = %{version}
 
 %description static
@@ -91,8 +70,6 @@ Statyczna wersja biblioteki HDF.
 Summary:	HDF utilities
 Summary(pl):	NarzЙdzia do plikСw HDF
 Group:		Applications/File
-Group(de):	Applikationen/Datei
-Group(pl):	Aplikacje/Pliki
 Requires:	%{name} = %{version}
 
 %description progs
