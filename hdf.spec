@@ -2,7 +2,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.1r5
-Release:	1
+Release:	2
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/tar/HDF%{version}.tar.gz
@@ -18,6 +18,7 @@ BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libtool >= 0:1.4.2
 BuildRequires:	zlib-devel >= 1.1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+ExclusiveArch:	%{ix86} alpha
 
 %description
 HDF is a multi-object file format that facilitates the transfer of
