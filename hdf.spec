@@ -85,7 +85,7 @@ Requires:	%{name} = %{version}-%{release}
 Utilities to convert from/to HDF format.
 
 %description progs -l pl
-Narzêdzia do konwersji z i to formatu HDF.
+Narzêdzia do konwersji z i do formatu HDF.
 
 %prep
 %setup -q -n HDF%{version}
