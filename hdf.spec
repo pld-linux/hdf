@@ -89,6 +89,7 @@ Narzêdzia do konwersji z i to formatu HDF.
 %patch3 -p1
 
 %build
+install -m755 /usr/share/libtool/config.{guess,sub} .
 ./configure %{_target_platform} \
 	--prefix=%{_prefix} --exec-prefix=%{_exec_prefix}
 
