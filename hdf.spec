@@ -116,6 +116,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_libdir},%{_mandir}/man{3,7},%{_includedir}/hdf}
 
 %{__make} install \
+	CC="%{__cc}" \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	libdir=$RPM_BUILD_ROOT%{_libdir} \
 	LIBDIR=$RPM_BUILD_ROOT%{_libdir} \
