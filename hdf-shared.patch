@@ -30,7 +30,7 @@ diff -Nur HDF4.1r4.orig/hdf/src/Makefile.in HDF4.1r4/hdf/src/Makefile.in
  	$(FC) $(FFLAGS) -c $<
  
 +.f.lo:
-+	libtool --mode=compile $(FC) $(FFLAGS) -c $<
++	libtool --mode=compile $(LTTAG) $(FC) $(FFLAGS) -c $<
 +
  # Rules to make Free format Fortran90 include files from F77 include files
  # 1) change all col. 1 [Cc] to '!'
@@ -373,7 +373,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/fortran/Makefile.in HDF4.1r4/mfhdf/fortran/Makefil
  .f.o:
  	$(FC) -c $(FFLAGS) $<
 +.f.lo:
-+	libtool --mode=compile $(FC) -c $(FFLAGS) $<
++	libtool --mode=compile $(LTTAG) $(FC) -c $(FFLAGS) $<
  .F.o:
  	ln -s $< $$$$.c \
  	&& $(CPP) -DUD_FORTRAN_SOURCE $(CPPFLAGS) $(CPPFLAGS_NETCDF) $$$$.c \
@@ -434,7 +434,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
  .f.o:
  	$(FC) -c $(FFLAGS) $<
 +.f.lo:
-+	libtool --mode=compile $(FC) -c $(FFLAGS) $<
++	libtool --mode=compile $(LTTAG) $(FC) -c $(FFLAGS) $<
  .F.o:
  	ln -s $< $$$$.c \
  	&& $(CPP) -DUD_FORTRAN_SOURCE $(CPPFLAGS) $(CPPFLAGS_NETCDF) $$$$.c \
@@ -475,7 +475,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
 -	$(AR) rcuv $@ $(LIBOBJS)
 -	$(RANLIB) $@
 -#	$(LD) -b -o libmfhdf.sl $(LIBOBJS)
-+	libtool $(CC) -o $(LIB_A) $(LIBOBJS) -L../../hdf/src/.libs -ldf -lz -ljpeg -lm -rpath /usr/lib
++	libtool $(CC) -o $(LIB_A) $(LIBOBJS) -L../../hdf/src -ldf -lz -ljpeg -lm -rpath /usr/lib
  
  # The following rule is for those makefiles needing to install object
  # modules in a library in another directory.  They need only define 

@@ -11,12 +11,12 @@ Patch0:		%{name}-system-libs.patch
 Patch1:		%{name}-strdup.patch
 Patch2:		%{name}-shared.patch
 URL:		http://hdf.ncsa.uiuc.edu/
-BuildRequires:	zlib-devel >= 1.1.3
-BuildRequires:	libjpeg-devel >= 6b
-BuildRequires:	flex
 BuildRequires:	bison
-BuildRequires:	libtool
+BuildRequires:	flex
 BuildRequires:	gcc-g77
+BuildRequires:	libjpeg-devel >= 6b
+BuildRequires:	libtool >= 0:1.4.2
+BuildRequires:	zlib-devel >= 1.1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -89,8 +89,16 @@ Narzêdzia do konwersji z i to formatu HDF.
 ./configure %{_target_platform} \
 	--prefix=%{_prefix} --exec-prefix=%{_exec_prefix}
 
+# libtool 1.4d requires --tag for g77, but doesn't have good tag for g77
+grep -q -e '--tag' `which libtool` && LTTAG="--tag=dummy"
+
 %{__make} CFLAGS="%{rpmcflags} -ansi -D_BSD_SOURCE -DHAVE_NETCDF" \
-	FFLAGS="%{rpmcflags}" YACC="bison -y"
+	FFLAGS="%{rpmcflags}" YACC="bison -y" LTTAG="$LTTAG"
+
+# avoid relinking
+cd mfhdf/libsrc
+sed -e '/^relink_command/d' libmfhdf.la > libmfhdf.la.tmp
+mv -f libmfhdf.la.tmp libmfhdf.la
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -111,7 +119,7 @@ mv -f $RPM_BUILD_ROOT%{_mandir}/man1/hdf.1 $RPM_BUILD_ROOT%{_mandir}/man7/hdf.7
 # NOTE: don't let adapter change %%{_prefix}/man to %%{_mandir}
 for i in ncdump ncgen ; do
 	mv -f $RPM_BUILD_ROOT%{_bindir}/$i $RPM_BUILD_ROOT%{_bindir}/hdf$i
-	mv -f $RPM_BUILD_ROOT%{_mandir}/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
+	mv -f $RPM_BUILD_ROOT/usr/man/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
 done
 
 # remove unwanted path from libtool script
