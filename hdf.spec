@@ -2,7 +2,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.1r5
-Release:	2.2
+Release:	3
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/tar/HDF%{version}.tar.gz
@@ -19,7 +19,7 @@ BuildRequires:	flex
 BuildRequires:	gcc-g77
 BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
-BuildRequires:	libtool >= 1:1.4.2-9
+BuildRequires:	libtool >= 2:1.4d-3
 BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -99,13 +99,16 @@ install -m755 /usr/share/libtool/config.{guess,sub} .
 install -m755 /usr/share/libtool/config.{guess,sub} hdf/fmpool
 install -m755 /usr/share/libtool/config.{guess,sub} hdf/jpeg
 ./configure %{_target_platform} \
-	--prefix=%{_prefix} --exec-prefix=%{_exec_prefix}
+	--prefix=%{_prefix} \
+	--exec-prefix=%{_exec_prefix}
 
-# libtool 1.4d requires --tag for g77, libtool 1.4.2 doesn't accept --tag
-grep -q -e '--tag' `which libtool` && LTTAG="--tag=F77"
-
-%{__make} CFLAGS="%{rpmcflags} -ansi -D_BSD_SOURCE -DHAVE_NETCDF" \
-	FFLAGS="%{rpmcflags}" YACC="bison -y" LTTAG="$LTTAG"
+%{__make} \
+	libdir=%{_libdir} \
+	LIBDIR=%{_libdir} \
+	CFLAGS="%{rpmcflags} -ansi -D_BSD_SOURCE -DHAVE_NETCDF" \
+	FFLAGS="%{rpmcflags}" \
+	YACC="bison -y" \
+	LTTAG="--tag=F77"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -113,6 +116,8 @@ install -d $RPM_BUILD_ROOT{%{_libdir},%{_mandir}/man{3,7},%{_includedir}/hdf}
 
 %{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
+	libdir=$RPM_BUILD_ROOT%{_libdir} \
+	LIBDIR=$RPM_BUILD_ROOT%{_libdir} \
 	exec_prefix=$RPM_BUILD_ROOT%{_exec_prefix} \
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	infodir=$RPM_BUILD_ROOT%{_infodir}
