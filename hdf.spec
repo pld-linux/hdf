@@ -2,7 +2,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.1r5
-Release:	2
+Release:	2.1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/tar/HDF%{version}.tar.gz
@@ -10,6 +10,7 @@ Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.
 Patch0:		%{name}-system-libs.patch
 Patch1:		%{name}-strdup.patch
 Patch2:		%{name}-shared.patch
+Patch3:		%{name}-athlon.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	bison
 BuildRequires:	flex
@@ -85,6 +86,7 @@ Narzêdzia do konwersji z i to formatu HDF.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 ./configure %{_target_platform} \
