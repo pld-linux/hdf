@@ -1,0 +1,499 @@
+diff -Nur HDF4.1r4.orig/Makefile.in HDF4.1r4/Makefile.in
+--- HDF4.1r4.orig/Makefile.in	Sun Jun 20 03:40:35 1999
++++ HDF4.1r4/Makefile.in	Sun Mar 25 15:56:20 2001
+@@ -267,14 +267,6 @@
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=$@ \
+           SUBDIRS="$(HDFDIR)" subd
+ 
+-libjpeg: 
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=$@ \
+-          SUBDIRS="$(HDFDIR)" subd
+-
+-libz: 
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=$@ \
+-          SUBDIRS="$(HDFDIR)" subd
+-
+ libmfhdf:
+ 	@$(MAKE) $(MFLAGS) $(NETCDF_FLAGS) TARG=$@ \
+           SUBDIRS="$(NETCDFDIR)" subdn
+@@ -389,8 +381,6 @@
+ 	@echo "make libs              - makes HDF, IJG JPEG and mfhdf libraries only"
+ 	@echo "make hdf-libs          - makes HDF and IJG JPEG libraries only"
+ 	@echo "make libdf             - makes HDF library"
+-	@echo "make libjpeg           - makes IJG JPEG library"
+-	@echo "make libz              - makes GZIP deflate library"
+ 	@echo "make libmfhdf          - makes mfhdf library"
+ 	@echo "make test              - run both HDF and NETCDF tests"
+ 	@echo "make test-mfhdf        - run NETCDF tests" 
+diff -Nur HDF4.1r4.orig/hdf/Makefile.in HDF4.1r4/hdf/Makefile.in
+--- HDF4.1r4.orig/hdf/Makefile.in	Wed Mar  4 21:31:55 1998
++++ HDF4.1r4/hdf/Makefile.in	Sun Mar 25 15:47:35 2001
+@@ -79,7 +79,7 @@
+ MANIFEST = $(DISTFILES)
+ DISTFILES = Makefile.in COPYING build.inc
+ 
+-SUBDIRS= src jpeg zlib fmpool pablo test util
++SUBDIRS= src fmpool pablo test util
+ 
+ HDFINC= $(srcdir)/src
+ HDFLIB= $(srcdir)/src
+@@ -121,34 +121,18 @@
+ # General rules
+ #
+ all:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd  
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd  
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=$@ \
+           SUBDIRS="src pablo fmpool util test" subd
+ 
+ allnofortran:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd  
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd  
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=nofortran \
+           SUBDIRS="src pablo fmpool util test" subd
+ 
+ rebuild rebuildnofortran:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd 
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd 
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=$@ \
+           SUBDIRS="src pablo fmpool util test" subd
+ 
+ libnofortran:
+-	@$(MAKE) $(MYFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-	  SUBDIRS="jpeg" subd 
+-	@$(MAKE) $(MYFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-	  SUBDIRS="zlib" subd 
+ 	@$(MAKE) $(MYFLAGS) $(HDF_FLAGS) TARG=nofortran \
+ 	  SUBDIRS="src pablo fmpool" subd
+ 
+@@ -157,10 +141,6 @@
+ allnostub: allnofortran
+ 
+ libs:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=all \
+           SUBDIRS="src pablo fmpool" subd
+ 
+@@ -168,43 +148,19 @@
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=all \
+           SUBDIRS="src" subd
+ 
+-libjpeg:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd
+-
+-libz:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd
+-
+ utilities:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=all \
+           SUBDIRS="src pablo fmpool util" subd
+ 
+ hdf-test:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=all \
+           SUBDIRS="src pablo fmpool test" subd
+ 
+ hdf-testnofortran:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=nofortran \
+           SUBDIRS="src pablo fmpool test" subd
+ 
+ testnofortran:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd 
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd 
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=nofortran \
+           SUBDIRS="src pablo fmpool test" subd
+ 
+@@ -226,27 +182,23 @@
+ 
+ install:
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=install-lib \
+-          SUBDIRS="src jpeg zlib pablo fmpool" subd
++          SUBDIRS="src pablo fmpool" subd
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=install \
+           SUBDIRS="util" subd
+ 
+ install-libs:
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=install-lib \
+-          SUBDIRS="src jpeg zlib pablo fmpool" subd
++          SUBDIRS="src pablo fmpool" subd
+ 
+ install-includes:
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=install-includes \
+-          SUBDIRS="src jpeg zlib pablo fmpool" subd
++          SUBDIRS="src pablo fmpool" subd
+ 
+ install-utils:
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=install \
+           SUBDIRS="util" subd
+ 
+ perfs:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=all \
+           SUBDIRS="src perf fmpool" subd
+ 
+@@ -255,25 +207,21 @@
+ #          SUBDIRS="src util test" subd
+ 
+ debug:
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libjpeg.a \
+-          SUBDIRS="jpeg" subd 
+-	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=libz.a \
+-          SUBDIRS="zlib" subd 
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=debug \
+           SUBDIRS="src fmpool test" subd
+ 
+ saber:
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=saber \
+-          SUBDIRS="src jpeg zlib test" subd
++          SUBDIRS="src test" subd
+ 
+ clean:
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=$@  \
+-          SUBDIRS="src jpeg zlib pablo fmpool util test" subd
++          SUBDIRS="src pablo fmpool util test" subd
+ 	-$(RM) $(RMFLAGS) core *.log
+ 
+ distclean:
+ 	@$(MAKE) $(MFLAGS) $(HDF_FLAGS) TARG=$@  \
+-          SUBDIRS="src jpeg zlib pablo fmpool util test" subd
++          SUBDIRS="src pablo fmpool util test" subd
+ 	-$(RM) $(RMFLAGS) core *.log
+ 	-$(RM) -rf bin lib include config.status Makefile
+ 
+@@ -321,8 +269,6 @@
+ 	@echo "make utilities     - makes HDF library and utilities"
+ 	@echo "make libs          - makes HDF and IJG JPEG libraries only"
+ 	@echo "make libdf         - makes HDF library "
+-	@echo "make libjpeg       - makes IJG JPEG library "
+-	@echo "make libz          - makes GZIP deflate library "
+ 	@echo "make test-hdf          - run HDF library tests " 
+ 	@echo "make test-hdfnofortran - run HDF library tests except the fortran test " 
+ 	@echo "make test-hdffortran   - run HDF library fortran tests only " 
+diff -Nur HDF4.1r4.orig/hdf/pablo/Makefile.in HDF4.1r4/hdf/pablo/Makefile.in
+--- HDF4.1r4.orig/hdf/pablo/Makefile.in	Tue Aug 22 20:47:01 2000
++++ HDF4.1r4/hdf/pablo/Makefile.in	Sun Mar 25 15:50:07 2001
+@@ -136,16 +136,16 @@
+ HDFSRC= $(srcdir)/../src
+ 
+ # ==> specify where to find the JPEG include files and library
+-JPEGINC=$(srcdir)/../jpeg
+-JPEGLIB=$(srcdir)/../jpeg
++JPEGINC=/usr/include
++JPEGLIB=/usr/lib
+ 
+ # ==> specify where to find the FMPOOL include and source files 
+ FMPOOL_INC=$(srcdir)/../fmpool
+ FMPOOL_SRC=$(srcdir)/../fmpool
+ 
+ # ==> specify where to find the gzip zlib include files and library
+-ZLIBINC=$(srcdir)/../zlib
+-ZLIBLIB=$(srcdir)/../zlib
++ZLIBINC=/usr/include
++ZLIBLIB=/usr/lib
+ 
+ ALL_CFLAGS= $(CFLAGS) $(PABLO_FLAGS) $(FMPOOL_FLAGS) -I. $(PABLO_INCLUDE) -I$(HDFINC) -I$(JPEGINC) -I$(ZLIBINC) -I$(FMPOOL_INC)
+ 
+diff -Nur HDF4.1r4.orig/hdf/src/Makefile.in HDF4.1r4/hdf/src/Makefile.in
+--- HDF4.1r4.orig/hdf/src/Makefile.in	Tue Aug 29 13:04:27 2000
++++ HDF4.1r4/hdf/src/Makefile.in	Sun Mar 25 15:51:28 2001
+@@ -156,8 +156,8 @@
+ HDFBIN= $(srcdir)/../bin
+ 
+ # ==> specify where to find the JPEG include files and library
+-JPEGINC=$(srcdir)/../jpeg
+-JPEGLIB=$(srcdir)/../jpeg
++JPEGINC=/usr/include
++JPEGLIB=/usr/lib
+ 
+ # ==> specify where to find the Pablo include and source files 
+ PABLO_HINC=$(srcdir)/../pablo
+@@ -168,8 +168,8 @@
+ FMPOOL_SRC=$(srcdir)/../fmpool
+ 
+ # ==> specify where to find the gzip zlib include files and library
+-ZLIBINC=$(srcdir)/../zlib
+-ZLIBLIB=$(srcdir)/../zlib
++ZLIBINC=/usr/include
++ZLIBLIB=/usr/lib
+ 
+ ALL_CFLAGS = -I. $(CFLAGS) $(FMPOOL_FLAGS) -I$(JPEGINC) -I$(ZLIBINC)
+ LINTFLAGS=
+diff -Nur HDF4.1r4.orig/hdf/test/Makefile.in HDF4.1r4/hdf/test/Makefile.in
+--- HDF4.1r4.orig/hdf/test/Makefile.in	Wed Jan 13 20:19:37 1999
++++ HDF4.1r4/hdf/test/Makefile.in	Sun Mar 25 15:53:46 2001
+@@ -219,8 +219,8 @@
+ HDFBIN=$(srcdir)/../bin
+ 
+ # ==> where is your JPEG library (libjpeg.a) located?
+-JPEGLIB=$(srcdir)/../jpeg
+-JPEGINC=$(srcdir)/../jpeg
++JPEGLIB=/usr/lib
++JPEGINC=/usr/include
+ 
+ # ==> where is your PABLO include files
+ PABLO_HINC= $(srcdir)/../pablo
+@@ -230,8 +230,8 @@
+ FMPOOL_SRC=$(srcdir)/../fmpool
+ 
+ # ==> where is your zlib library (libzlib.a) located?
+-ZLIBLIB=$(srcdir)/../zlib
+-ZLIBINC=$(srcdir)/../zlib
++ZLIBLIB=/usr/lib
++ZLIBINC=/usr/include
+ 
+ ALL_CFLAGS = $(CFLAGS) $(FMPOOL_FLAGS) -I$(HDFINC) -I$(JPEGINC) -I$(ZLIBINC)
+ 
+@@ -310,14 +310,6 @@
+ #	cd $(HDFLIB); echo Making \`$(TARG)\' in `pwd`; \        
+ #	$(MAKE) $(MFLAGS) $(HDF_FLAGS) $(TARG); 
+ 
+-$(JPEGLIB)/libjpeg.a:
+-#	cd $(JPEGLIB); echo Making \`$(TARG)\' in `pwd`; \        
+-#	$(MAKE) $(MFLAGS) $(HDF_FLAGS) $(TARG); 
+-
+-$(ZLIBLIB)/libz.a:
+-#	cd $(JPEGLIB); echo Making \`$(TARG)\' in `pwd`; \        
+-#	$(MAKE) $(MFLAGS) $(HDF_FLAGS) $(TARG); 
+-
+ #.c.o: 
+ #	 $(CC) $(CFLAGS) -c -I$(HDFINC) $*.c 
+ #
+@@ -331,8 +323,8 @@
+ 
+ $(FOBJS): fortest.inc
+ 
+-#$(FTESTS): $(FOBJS) $(CFORSUPOBJS) $(FFORSUPOBJS) $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a
+-#	$(FC) $(FFLAGS) $@.o -o $@ $(CFORSUPOBJS) $(FFORSUPOBJS) $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a
++#$(FTESTS): $(FOBJS) $(CFORSUPOBJS) $(FFORSUPOBJS) $(HDFLIB)/libdf.a
++#	$(FC) $(FFLAGS) $@.o -o $@ $(CFORSUPOBJS) $(FFORSUPOBJS) $(HDFLIB)/libdf.a
+ 
+ #$(FTESTS): $(FRC)
+ 
+@@ -360,26 +352,26 @@
+ 	@cmp fortest.out fortest.sav && echo "*** Fortran tests passed ***";
+ 
+ qtesthdf: $(COBJS) $(HDFLIB)/libdf.a
+-	quantify $(CC) $(ALL_CFLAGS) -o qtesthdf $(COBJS) $(HDFSRC)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a -lm
++	quantify $(CC) $(ALL_CFLAGS) -o qtesthdf $(COBJS) $(HDFSRC)/libdf.a -ljpeg -lz -lm
+ 
+ ptesthdf: $(COBJS) $(HDFLIB)/libdf.a
+-	purify $(CC) $(ALL_CFLAGS) -o ptesthdf $(COBJS) $(HDFSRC)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a -lm
++	purify $(CC) $(ALL_CFLAGS) -o ptesthdf $(COBJS) $(HDFSRC)/libdf.a -ljpeg -lz -lm
+ 
+ testhdf.tc: $(COBJS) $(HDFLIB)/libdf.a
+-	proof $(CC) $(ALL_CFLAGS) -o testhdf.tc $(COBJS) $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a -lm
++	proof $(CC) $(ALL_CFLAGS) -o testhdf.tc $(COBJS) $(HDFLIB)/libdf.a -ljpeg -lz -lm
+ 
+ testhdf: $(COBJS) $(HDFLIB)/libdf.a
+-	$(CC) $(ALL_CFLAGS) -o testhdf $(COBJS) $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a -lm
++	$(CC) $(ALL_CFLAGS) -o testhdf $(COBJS) $(HDFLIB)/libdf.a -ljpeg -lz -lm
+ 	test -d $(TESTDIR) || mkdir $(TESTDIR)
+ 
+ fortestF: $(FOBJS) $(HDFLIB)/libdf.a
+-	$(FC) $(FFLAGS) -o $@ $(FOBJS) $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a -lm
++	$(FC) $(FFLAGS) -o $@ $(FOBJS) $(HDFLIB)/libdf.a -ljpeg -lz -lm
+ 
+ fortest: $(HDFLIB)/libdf.a fortest.c $(CHDRS)
+-	$(CC) $(ALL_CFLAGS) -o fortest fortest.c $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a -lm
++	$(CC) $(ALL_CFLAGS) -o fortest fortest.c $(HDFLIB)/libdf.a -ljpeg -lz -lm
+ 
+ gentest: gentest.c $(HDFLIB)/libdf.a
+-	$(CC) $(ALL_CFLAGS) gentest.c -o gentest $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a -lm
++	$(CC) $(ALL_CFLAGS) gentest.c -o gentest $(HDFLIB)/libdf.a -ljpeg -lz -lm
+ 
+ ftests: $(FTESTS)
+ 
+diff -Nur HDF4.1r4.orig/hdf/util/Makefile.in HDF4.1r4/hdf/util/Makefile.in
+--- HDF4.1r4.orig/hdf/util/Makefile.in	Mon Jun 26 21:51:31 2000
++++ HDF4.1r4/hdf/util/Makefile.in	Sun Mar 25 15:55:27 2001
+@@ -121,8 +121,8 @@
+ HDFBIN=$(srcdir)/../bin
+ 
+ # ==> where is your JPEG library (libjpeg.a) located?
+-JPEGLIB=$(srcdir)/../jpeg
+-JPEGINC=$(srcdir)/../jpeg
++JPEGLIB=/usr/lib
++JPEGINC=/usr/include
+ 
+ # ==> where is your PABLO include files
+ PABLO_HINC= $(srcdir)/../pablo
+@@ -132,8 +132,8 @@
+ FMPOOL_SRC=$(srcdir)/../fmpool
+ 
+ # ==> where is your zlib library (libz.a) located?
+-ZLIBLIB=$(srcdir)/../zlib
+-ZLIBINC=$(srcdir)/../zlib
++ZLIBLIB=/usr/lib
++ZLIBINC=/usr/include
+ 
+ #Where are the utility includes
+ UTILINC=$(srcdir)
+@@ -221,29 +221,25 @@
+ 	$(CC) $(ALL_CFLAGS) -c $<
+ 
+ .c: $(HDFLIB)/libdf.a
+-	$(CC) $(ALL_CFLAGS) $< -o $@ $(HDFLIB)/libdf.a $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a $(LIBSX)
++	$(CC) $(ALL_CFLAGS) $< -o $@ $(HDFLIB)/libdf.a -ljpeg -lz $(LIBSX)
+ 
+ .f: $(HDFLIB)/libdf.a 
+-	$(FC) $(FFLAGS) $< $(HDFLIB)/libdf.a -o $@ $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a
++	$(FC) $(FFLAGS) $< $(HDFLIB)/libdf.a -o $@ -ljpeg -lz
+ 
+ hdfed: he.h he_proto.h $(HEOBJ) $(HDFLIB)/libdf.a $(FRC)
+-	$(CC) $(ALL_CFLAGS) $(HEOBJ) $(HDFLIB)/libdf.a -o hdfed $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a
++	$(CC) $(ALL_CFLAGS) $(HEOBJ) $(HDFLIB)/libdf.a -o hdfed -ljpeg -lz
+ 
+ gif2hdf: gif.h $(GHOBJ) $(HDFLIB)/libdf.a $(FRC)
+-	$(CC) $(ALL_CFLAGS) $(GHOBJ) $(HDFLIB)/libdf.a -o gif2hdf $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a
++	$(CC) $(ALL_CFLAGS) $(GHOBJ) $(HDFLIB)/libdf.a -o gif2hdf -ljpeg -lz
+ 
+ hdf2gif: gif.h $(HGOBJ) $(HDFLIB)/libdf.a $(FRC)
+-	$(CC) $(ALL_CFLAGS) $(HGOBJ) $(HDFLIB)/libdf.a -o hdf2gif $(JPEGLIB)/libjpeg.a $(ZLIBLIB)/libz.a
++	$(CC) $(ALL_CFLAGS) $(HGOBJ) $(HDFLIB)/libdf.a -o hdf2gif -ljpeg -lz
+ 
+ utils: $(UTILS) $(HDFLIB)/libdf.a $(FRC)
+ 
+ $(HEOBJ): $(FRC)
+ 
+ $(HDFLIB)/libdf.a:
+-
+-$(JPEGLIB)/libjpeg.a:
+-
+-$(ZLIBLIB)/libz.a:
+ 
+ clean:
+ 	-$(RM) $(RMFLAGS) *.o $(UTILS) hdfed fptest
+diff -Nur HDF4.1r4.orig/mfhdf/dumper/Makefile.in HDF4.1r4/mfhdf/dumper/Makefile.in
+--- HDF4.1r4.orig/mfhdf/dumper/Makefile.in	Wed Aug 30 22:32:44 2000
++++ HDF4.1r4/mfhdf/dumper/Makefile.in	Sun Mar 25 16:02:46 2001
+@@ -80,8 +80,8 @@
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+-JPEG_LIB = $(TOP_SRCDIR)/hdf/jpeg/libjpeg.a
+-ZLIB_LIB = $(TOP_SRCDIR)/hdf/zlib/libz.a
++JPEG_LIB = -ljpeg
++ZLIB_LIB = -lz
+ NETCDF_INC = $(TOP_SRCDIR)/mfhdf/libsrc
+ PORT_INC   = $(TOP_SRCDIR)/mfhdf/port
+ CPP	   = $(CC) -E
+diff -Nur HDF4.1r4.orig/mfhdf/fortran/Makefile.in HDF4.1r4/mfhdf/fortran/Makefile.in
+--- HDF4.1r4.orig/mfhdf/fortran/Makefile.in	Wed Aug 30 23:55:39 2000
++++ HDF4.1r4/mfhdf/fortran/Makefile.in	Sun Mar 25 16:03:23 2001
+@@ -80,8 +80,8 @@
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+-JPEG_LIB = $(TOP_SRCDIR)/hdf/jpeg/libjpeg.a
+-ZLIB_LIB = $(TOP_SRCDIR)/hdf/zlib/libz.a
++JPEG_LIB = -ljpeg
++ZLIB_LIB = -lz
+ NETCDF_INC = $(TOP_SRCDIR)/mfhdf/libsrc
+ PORT_INC   = $(TOP_SRCDIR)/mfhdf/port
+ CPP	   = $(CC) -E
+diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.in
+--- HDF4.1r4.orig/mfhdf/libsrc/Makefile.in	Wed Aug 30 23:55:46 2000
++++ HDF4.1r4/mfhdf/libsrc/Makefile.in	Sun Mar 25 16:03:55 2001
+@@ -80,8 +80,8 @@
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+-JPEG_LIB = $(TOP_SRCDIR)/hdf/jpeg/libjpeg.a
+-ZLIB_LIB = $(TOP_SRCDIR)/hdf/zlib/libz.a
++JPEG_LIB = -ljpeg
++ZLIB_LIB = -lz
+ NETCDF_INC = $(TOP_SRCDIR)/mfhdf/libsrc
+ PORT_INC   = $(TOP_SRCDIR)/mfhdf/port
+ CPP	   = $(CC) -E
+diff -Nur HDF4.1r4.orig/mfhdf/ncdump/Makefile.in HDF4.1r4/mfhdf/ncdump/Makefile.in
+--- HDF4.1r4.orig/mfhdf/ncdump/Makefile.in	Wed Aug 30 20:43:28 2000
++++ HDF4.1r4/mfhdf/ncdump/Makefile.in	Sun Mar 25 16:04:21 2001
+@@ -80,8 +80,8 @@
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+-JPEG_LIB = $(TOP_SRCDIR)/hdf/jpeg/libjpeg.a
+-ZLIB_LIB = $(TOP_SRCDIR)/hdf/zlib/libz.a
++JPEG_LIB = -ljpeg
++ZLIB_LIB = -lz
+ NETCDF_INC = $(TOP_SRCDIR)/mfhdf/libsrc
+ PORT_INC   = $(TOP_SRCDIR)/mfhdf/port
+ CPP	   = $(CC) -E
+diff -Nur HDF4.1r4.orig/mfhdf/ncgen/Makefile.in HDF4.1r4/mfhdf/ncgen/Makefile.in
+--- HDF4.1r4.orig/mfhdf/ncgen/Makefile.in	Wed Aug 30 20:43:30 2000
++++ HDF4.1r4/mfhdf/ncgen/Makefile.in	Sun Mar 25 16:06:19 2001
+@@ -80,8 +80,8 @@
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+-JPEG_LIB = $(TOP_SRCDIR)/hdf/jpeg/libjpeg.a
+-ZLIB_LIB = $(TOP_SRCDIR)/hdf/zlib/libz.a
++JPEG_LIB = -ljpeg
++ZLIB_LIB = -lz
+ NETCDF_INC = $(TOP_SRCDIR)/mfhdf/libsrc
+ PORT_INC   = $(TOP_SRCDIR)/mfhdf/port
+ CPP	   = $(CC) -E
+@@ -101,7 +101,7 @@
+ FTPDIR	= 
+ VERSION	= 2.3.2
+ LEX	= lex
+-YACC	= yacc
++#YACC	= yacc
+ DIFF    = diff
+ DIFF_FLAGS = -w
+ 
+diff -Nur HDF4.1r4.orig/mfhdf/nctest/Makefile.in HDF4.1r4/mfhdf/nctest/Makefile.in
+--- HDF4.1r4.orig/mfhdf/nctest/Makefile.in	Wed Aug 30 02:11:23 2000
++++ HDF4.1r4/mfhdf/nctest/Makefile.in	Sun Mar 25 16:06:34 2001
+@@ -80,8 +80,8 @@
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+-JPEG_LIB = $(TOP_SRCDIR)/hdf/jpeg/libjpeg.a
+-ZLIB_LIB = $(TOP_SRCDIR)/hdf/zlib/libz.a
++JPEG_LIB = -ljpeg
++ZLIB_LIB = -lz
+ NETCDF_INC = $(TOP_SRCDIR)/mfhdf/libsrc
+ PORT_INC   = $(TOP_SRCDIR)/mfhdf/port
+ CPP	   = $(CC) -E
+diff -Nur HDF4.1r4.orig/mfhdf/xdr/Makefile.in HDF4.1r4/mfhdf/xdr/Makefile.in
+--- HDF4.1r4.orig/mfhdf/xdr/Makefile.in	Wed Aug 30 23:55:50 2000
++++ HDF4.1r4/mfhdf/xdr/Makefile.in	Sun Mar 25 16:07:13 2001
+@@ -82,8 +82,8 @@
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+-JPEG_LIB = $(TOP_SRCDIR)/hdf/jpeg/libjpeg.a
+-ZLIB_LIB = $(TOP_SRCDIR)/hdf/zlib/libz.a
++JPEG_LIB = -ljpeg
++ZLIB_LIB = -lz
+ NETCDF_INC = $(TOP_SRCDIR)/mfhdf/libsrc
+ PORT_INC   = $(TOP_SRCDIR)/mfhdf/port
+ CPP	   = $(CC) -E

@@ -1,0 +1,574 @@
+diff -Nur HDF4.1r4.orig/hdf/src/Makefile.in HDF4.1r4/hdf/src/Makefile.in
+--- HDF4.1r4.orig/hdf/src/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/hdf/src/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -123,7 +123,7 @@
+ # Directory in which to install documentation info files.
+ infodir = $(prefix)/info
+ 
+-TARGETLIB = libdf.a
++TARGETLIB = libdf.la
+ 
+ #### ----- host and target specific makefile fragments come in here.-------
+ ### ------------------- end of makefile fragments -------------------------
+@@ -189,7 +189,7 @@
+ HINCS = $(HDRS) $(FINCS)
+ 
+ #.SUFFIXES:
+-.SUFFIXES: .c.o .f.o .installed .finstalled
++.SUFFIXES: .c.o .f.o .lo .installed .finstalled
+ 
+ # This rule causes ansi2knr to be invoked.
+ #@ISANSICOM@.c.o:
+@@ -204,9 +204,15 @@
+ .c.o:
+ 	$(CC) $(CPPFLAGS) $(ALL_CFLAGS) -c $<
+ 
++.c.lo:
++	libtool $(CC) $(CPPFLAGS) $(ALL_CFLAGS) -c $<
++
+ .f.o:
+ 	$(FC) $(FFLAGS) -c $<
+ 
++.f.lo:
++	libtool --mode=compile $(FC) $(FFLAGS) -c $<
++
+ # Rules to make Free format Fortran90 include files from F77 include files
+ # 1) change all col. 1 [Cc] to '!'
+ # 2) change all col. 6 continuation character to '&'
+@@ -229,37 +235,28 @@
+ 
+ rall::         FORCE
+ 	@if test -z "$(FMPOOL_FLAGS)"; then \
+-	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) libdf.a; \
++	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) libdf.la; \
+ 	else		 \
+-	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) FMPOOL_FLAGS="$(FMPOOL_FLAGS) -I$(FMPOOL_INC)" libdf.a; \
++	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) FMPOOL_FLAGS="$(FMPOOL_FLAGS) -I$(FMPOOL_INC)" libdf.la; \
+ 	fi
+ 
+ libnofortran::         FORCE
+ 	@if test -z "$(FMPOOL_FLAGS)"; then \
+-	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) nofort-libdf.a; \
++	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) nofort-libdf.la; \
+ 	else		 \
+-	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) FMPOOL_FLAGS="$(FMPOOL_FLAGS) -I$(FMPOOL_INC)" nofort-libdf.a; \
++	  $(MAKE) $(MFLAGS) $(HDF_FLAGS) FMPOOL_FLAGS="$(FMPOOL_FLAGS) -I$(FMPOOL_INC)" nofort-libdf.la; \
+ 	fi
+ 
+ 
+-libdf.a: $(COBJS) $(FOBJS)
+-	-$(RM) $(RMFLAGS) libdf.a
+-#	$(AR) $(ARFLAGS) libdf.a `lorder '$(COBJS) $(FOBJS)' | tsort `
+-	$(AR) $(ARFLAGS) libdf.a $(COBJS) $(FOBJS)
+-	$(RANLIB) libdf.a
+-#	$(LD) -b -o libdf.sl $(COBJS) $(FOBJS)
+-
+-nofort-libdf.a: $(COBJS)
+-	-$(RM) $(RMFLAGS) libdf.a
+-#	$(AR) $(ARFLAGS) libdf.a `lorder $(COBJS) | tsort `
+-	$(AR) $(ARFLAGS) libdf.a $(COBJS)
+-	$(RANLIB) libdf.a
+-
+-nofort-libdf-inst.a:   $(COBJS) $(PCOBJS)
+-	-$(RM) $(RMFLAGS) libdf-inst.a libdf.a
+-	$(AR) $(ARFLAGS) libdf-inst.a  $(COBJS) $(PCOBJS)
+-	$(RANLIB) libdf-inst.a
+-	ln -s libdf-inst.a libdf.a
++libdf.la: $(COBJS) $(FOBJS)
++	libtool $(CC) -o libdf.la $(COBJS) $(FOBJS) -lz -ljpeg -lm -rpath /usr/lib
++
++nofort-libdf.la: $(COBJS)
++	libtool $(CC) -o libdf.la $(COBJS) -lz -ljpeg -lm -rpath /usr/lib
++
++nofort-libdf-inst.la:   $(COBJS) $(PCOBJS)
++	libtool $(CC) -o libdf-inst.la $(COBJS) $(PCOBJS) -lz -ljpeg -lm -rpath /usr/lib
++	ln -s libdf-inst.la libdf.la
+ 
+ 
+ #libnostub nofortran: libnofortran .finstalled
+@@ -277,7 +274,7 @@
+ $(FOBJS): $(FRC)
+ 
+ #debug: libdf.a .installed
+-debug: libdf.a 
++debug: libdf.la 
+ 
+ saber:
+ 	#load -D$(MACHINE) $(CSRCS) $(TSRCS) -lc
+@@ -287,9 +284,7 @@
+ install-includes: install-headers
+ 
+ install-lib: install-headers
+-	$(INSTALL_DATA) $(TARGETLIB) $(libdir)/$(TARGETLIB).n
+-	( cd $(libdir) ; $(RANLIB) $(libdir)/$(TARGETLIB).n )
+-	mv -f $(libdir)/$(TARGETLIB).n $(libdir)/$(TARGETLIB)
++	libtool $(INSTALL_DATA) $(TARGETLIB) $(libdir)
+ 
+ install-headers: FORCE
+ 	@case "$(FC)" in \
+diff -Nur HDF4.1r4.orig/hdf/src/src.inc HDF4.1r4/hdf/src/src.inc
+--- HDF4.1r4.orig/hdf/src/src.inc	Sat Feb  6 04:21:48 1999
++++ HDF4.1r4/hdf/src/src.inc	Mon Mar 26 13:00:51 2001
+@@ -64,24 +64,24 @@
+ MFGR_CSRCS=mfgr.c
+ 
+ COBJS = $(HCOBJS) $(VCOBJS) $(DFCOBJS) $(MFCOBJS)
+-HCOBJS=hfile.o herr.o hblocks.o hbuffer.o hcompri.o hextelt.o hkit.o hdfalloc.o \
+-    hcomp.o hbitio.o tbbt.o crle.o cnbit.o mstdio.o cnone.o cskphuff.o \
+-    cdeflate.o bitvect.o atom.o hfiledd.o dynarray.o linklist.o glist.o \
+-    hchunks.o mcache.o
++HCOBJS=hfile.lo herr.lo hblocks.lo hbuffer.lo hcompri.lo hextelt.lo hkit.lo hdfalloc.lo \
++    hcomp.lo hbitio.lo tbbt.lo crle.lo cnbit.lo mstdio.lo cnone.lo cskphuff.lo \
++    cdeflate.lo bitvect.lo atom.lo hfiledd.lo dynarray.lo linklist.lo glist.lo \
++    hchunks.lo mcache.lo
+ 
+-VCOBJS=vg.o vrw.o vio.o vparse.o vconv.o vsfld.o vgp.o vhi.o vattr.o
++VCOBJS=vg.lo vrw.lo vio.lo vparse.lo vconv.lo vsfld.lo vgp.lo vhi.lo vattr.lo
+ 
+ DFCOBJS=$(DFG_COBJS) $(DFAN_COBJS) $(DFSD_COBJS) $(DFRI_COBJS)
+-DFG_COBJS=dfgroup.o dfconv.o dfufp2i.o dfutil.o dfstubs.o dfknat.o dfkswap.o \
+-          dfkcray.o dfkvms.o dfkconv.o dfkfuji.o 
+-DFAN_COBJS=dfan.o
+-DFSD_COBJS=dfsd.o
+-DFRI_COBJS=dfr8.o dfcomp.o dfrle.o dfimcomp.o dfjpeg.o dfunjpeg.o dfp.o \
+-           dfgr.o df24.o
++DFG_COBJS=dfgroup.lo dfconv.lo dfufp2i.lo dfutil.lo dfstubs.lo dfknat.lo dfkswap.lo \
++          dfkcray.lo dfkvms.lo dfkconv.lo dfkfuji.lo 
++DFAN_COBJS=dfan.lo
++DFSD_COBJS=dfsd.lo
++DFRI_COBJS=dfr8.lo dfcomp.lo dfrle.lo dfimcomp.lo dfjpeg.lo dfunjpeg.lo dfp.lo \
++           dfgr.lo df24.lo
+ 
+ MFCOBJS= $(MFAN_COBJS) $(MFGR_COBJS)
+-MFAN_COBJS=mfan.o
+-MFGR_COBJS=mfgr.o
++MFAN_COBJS=mfan.lo
++MFGR_COBJS=mfgr.lo
+ 
+ FSRCS = $(FCSRCS) $(FFSRCS)
+ FCSRCS=$(H_FCSRCS) $(V_FCSRCS) $(DF_FCSRCS) $(DFAN_FCSRCS) $(DFSD_FCSRCS) \
+@@ -110,25 +110,25 @@
+ 
+ FCOBJS=$(H_FCOBJS) $(V_FCOBJS) $(DF_FCOBJS) $(DFAN_FCOBJS) $(DFSD_FCOBJS) \
+        $(DFRI_FCOBJS) $(MFAN_FCOBJS) $(MFGR_FCOBJS)
+-H_FCOBJS=hfilef.o herrf.o 
+-V_FCOBJS=vgf.o vattrf.o
+-DF_FCOBJS=dff.o dfutilf.o
+-DFAN_FCOBJS=dfanf.o
+-DFSD_FCOBJS=dfsdf.o
+-DFRI_FCOBJS=dfr8f.o dfpf.o df24f.o
+-MFAN_FCOBJS=mfanf.o
+-MFGR_FCOBJS=mfgrf.o
++H_FCOBJS=hfilef.lo herrf.lo 
++V_FCOBJS=vgf.lo vattrf.lo
++DF_FCOBJS=dff.lo dfutilf.lo
++DFAN_FCOBJS=dfanf.lo
++DFSD_FCOBJS=dfsdf.lo
++DFRI_FCOBJS=dfr8f.lo dfpf.lo df24f.lo
++MFAN_FCOBJS=mfanf.lo
++MFGR_FCOBJS=mfgrf.lo
+ 
+ FFOBJS=$(H_FFOBJS) $(V_FFOBJS) $(DF_FFOBJS) $(DFAN_FFOBJS) $(DFSD_FFOBJS) \
+        $(DFRI_FFOBJS) $(MFAN_FFOBJS) $(MFGR_FFOBJS)
+-H_FFOBJS=hfileff.o 
+-V_FFOBJS=vgff.o vattrff.o
+-DF_FFOBJS=dfff.o dfufp2if.o
+-DFAN_FFOBJS=dfanff.o
+-DFSD_FFOBJS=dfsdff.o
+-DFRI_FFOBJS=df24ff.o dfpff.o dfr8ff.o
++H_FFOBJS=hfileff.lo 
++V_FFOBJS=vgff.lo vattrff.lo
++DF_FFOBJS=dfff.lo dfufp2if.lo
++DFAN_FFOBJS=dfanff.lo
++DFSD_FFOBJS=dfsdff.lo
++DFRI_FFOBJS=df24ff.lo dfpff.lo dfr8ff.lo
+ MFAN_FFOBJS=
+-MFGR_FFOBJS=mfgrff.o
++MFGR_FFOBJS=mfgrff.lo
+ 
+ F90INCS=dffunc.f90 hdf.f90
+ FINCS=dffunc.inc hdf.inc $(F90INCS)
+diff -Nur HDF4.1r4.orig/hdf/test/Makefile.in HDF4.1r4/hdf/test/Makefile.in
+--- HDF4.1r4.orig/hdf/test/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/hdf/test/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -306,7 +306,7 @@
+ 
+ debug: ptesthdf
+ 
+-$(HDFLIB)/libdf.a:
++$(HDFLIB)/libdf.la:
+ #	cd $(HDFLIB); echo Making \`$(TARG)\' in `pwd`; \        
+ #	$(MAKE) $(MFLAGS) $(HDF_FLAGS) $(TARG); 
+ 
+@@ -351,27 +351,27 @@
+ 	./fortest > fortest.out
+ 	@cmp fortest.out fortest.sav && echo "*** Fortran tests passed ***";
+ 
+-qtesthdf: $(COBJS) $(HDFLIB)/libdf.a
+-	quantify $(CC) $(ALL_CFLAGS) -o qtesthdf $(COBJS) $(HDFSRC)/libdf.a -ljpeg -lz -lm
++qtesthdf: $(COBJS) $(HDFLIB)/libdf.la
++	quantify $(CC) $(ALL_CFLAGS) -o qtesthdf $(COBJS) -L../src/.libs -ldf -ljpeg -lz -lm
+ 
+-ptesthdf: $(COBJS) $(HDFLIB)/libdf.a
+-	purify $(CC) $(ALL_CFLAGS) -o ptesthdf $(COBJS) $(HDFSRC)/libdf.a -ljpeg -lz -lm
++ptesthdf: $(COBJS) $(HDFLIB)/libdf.la
++	purify $(CC) $(ALL_CFLAGS) -o ptesthdf $(COBJS) -L../src/.libs -ldf -ljpeg -lz -lm
+ 
+-testhdf.tc: $(COBJS) $(HDFLIB)/libdf.a
+-	proof $(CC) $(ALL_CFLAGS) -o testhdf.tc $(COBJS) $(HDFLIB)/libdf.a -ljpeg -lz -lm
++testhdf.tc: $(COBJS) $(HDFLIB)/libdf.la
++	proof $(CC) $(ALL_CFLAGS) -o testhdf.tc $(COBJS) -L../src/.libs -ldf -ljpeg -lz -lm
+ 
+-testhdf: $(COBJS) $(HDFLIB)/libdf.a
+-	$(CC) $(ALL_CFLAGS) -o testhdf $(COBJS) $(HDFLIB)/libdf.a -ljpeg -lz -lm
++testhdf: $(COBJS) $(HDFLIB)/libdf.la
++	$(CC) $(ALL_CFLAGS) -o testhdf $(COBJS) -L../src/.libs -ldf -ljpeg -lz -lm
+ 	test -d $(TESTDIR) || mkdir $(TESTDIR)
+ 
+-fortestF: $(FOBJS) $(HDFLIB)/libdf.a
+-	$(FC) $(FFLAGS) -o $@ $(FOBJS) $(HDFLIB)/libdf.a -ljpeg -lz -lm
++fortestF: $(FOBJS) $(HDFLIB)/libdf.la
++	$(FC) $(FFLAGS) -o $@ $(FOBJS) -L../src/.libs -ldf -ljpeg -lz -lm
+ 
+-fortest: $(HDFLIB)/libdf.a fortest.c $(CHDRS)
+-	$(CC) $(ALL_CFLAGS) -o fortest fortest.c $(HDFLIB)/libdf.a -ljpeg -lz -lm
++fortest: $(HDFLIB)/libdf.la fortest.c $(CHDRS)
++	$(CC) $(ALL_CFLAGS) -o fortest fortest.c -L../src/.libs -ldf -ljpeg -lz -lm
+ 
+-gentest: gentest.c $(HDFLIB)/libdf.a
+-	$(CC) $(ALL_CFLAGS) gentest.c -o gentest $(HDFLIB)/libdf.a -ljpeg -lz -lm
++gentest: gentest.c $(HDFLIB)/libdf.la
++	$(CC) $(ALL_CFLAGS) gentest.c -o gentest -L../src/.libs -ldf -ljpeg -lz -lm
+ 
+ ftests: $(FTESTS)
+ 
+diff -Nur HDF4.1r4.orig/hdf/util/Makefile.in HDF4.1r4/hdf/util/Makefile.in
+--- HDF4.1r4.orig/hdf/util/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/hdf/util/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -217,29 +217,29 @@
+ #.c.o: 
+ #	 $(CC) $(CFLAGS) -c -I$(HDFINC) -I$(UTILINC) -I$(JPEGINC) -I$(ZLIBINC) $*.c 
+ 
+-.c.o: he.h he_proto.h $(HDFLIB)/libdf.a $(FRC)
++.c.o: he.h he_proto.h $(HDFLIB)/libdf.la $(FRC)
+ 	$(CC) $(ALL_CFLAGS) -c $<
+ 
+-.c: $(HDFLIB)/libdf.a
+-	$(CC) $(ALL_CFLAGS) $< -o $@ $(HDFLIB)/libdf.a -ljpeg -lz $(LIBSX)
++.c: $(HDFLIB)/libdf.la
++	$(CC) $(ALL_CFLAGS) $< -o $@ -L../src/.libs -ldf -ljpeg -lz $(LIBSX)
+ 
+-.f: $(HDFLIB)/libdf.a 
+-	$(FC) $(FFLAGS) $< $(HDFLIB)/libdf.a -o $@ -ljpeg -lz
++.f: $(HDFLIB)/libdf.la 
++	$(FC) $(FFLAGS) $< -o $@ -L../src/.libs -ldf -ljpeg -lz
+ 
+-hdfed: he.h he_proto.h $(HEOBJ) $(HDFLIB)/libdf.a $(FRC)
+-	$(CC) $(ALL_CFLAGS) $(HEOBJ) $(HDFLIB)/libdf.a -o hdfed -ljpeg -lz
++hdfed: he.h he_proto.h $(HEOBJ) $(HDFLIB)/libdf.la $(FRC)
++	$(CC) $(ALL_CFLAGS) $(HEOBJ) -L../src/.libs -ldf -o hdfed -ljpeg -lz
+ 
+-gif2hdf: gif.h $(GHOBJ) $(HDFLIB)/libdf.a $(FRC)
+-	$(CC) $(ALL_CFLAGS) $(GHOBJ) $(HDFLIB)/libdf.a -o gif2hdf -ljpeg -lz
++gif2hdf: gif.h $(GHOBJ) $(HDFLIB)/libdf.la $(FRC)
++	$(CC) $(ALL_CFLAGS) $(GHOBJ) -L../src/.libs -ldf -o gif2hdf -ljpeg -lz
+ 
+-hdf2gif: gif.h $(HGOBJ) $(HDFLIB)/libdf.a $(FRC)
+-	$(CC) $(ALL_CFLAGS) $(HGOBJ) $(HDFLIB)/libdf.a -o hdf2gif -ljpeg -lz
++hdf2gif: gif.h $(HGOBJ) $(HDFLIB)/libdf.la $(FRC)
++	$(CC) $(ALL_CFLAGS) $(HGOBJ) -L../src/.libs -ldf -o hdf2gif -ljpeg -lz
+ 
+-utils: $(UTILS) $(HDFLIB)/libdf.a $(FRC)
++utils: $(UTILS) $(HDFLIB)/libdf.la $(FRC)
+ 
+ $(HEOBJ): $(FRC)
+ 
+-$(HDFLIB)/libdf.a:
++$(HDFLIB)/libdf.la:
+ 
+ clean:
+ 	-$(RM) $(RMFLAGS) *.o $(UTILS) hdfed fptest
+diff -Nur HDF4.1r4.orig/mfhdf/Makefile.in HDF4.1r4/mfhdf/Makefile.in
+--- HDF4.1r4.orig/mfhdf/Makefile.in	Wed Aug 30 02:11:10 2000
++++ HDF4.1r4/mfhdf/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -131,10 +131,10 @@
+     ncdump/install-man    ncgen/install-man   \
+     xdr/install-includes fortran/install-includes libsrc/install-includes
+ 
+-all::		port/all xdr/all libsrc/all fortran/all ncdump/all \
++all::		port/all xdr/all fortran/all libsrc/all ncdump/all \
+ 		ncgen/all nctest/all doc/all dumper/all pablo/all
+-libmfhdf::	port/all xdr/all libsrc/all fortran/all 
+-libmfhdf-inst::	port/all xdr/all libsrc/all fortran/all pablo/all
++libmfhdf::	port/all xdr/all fortran/all libsrc/all 
++libmfhdf-inst::	port/all xdr/all fortran/all libsrc/all pablo/all
+ test::		xdr/test libsrc/test nctest/test fortran/test ncdump/test \
+ 		ncgen/test dumper/test
+ install::	xdr/install fortran/install libsrc/install ncdump/install \
+diff -Nur HDF4.1r4.orig/mfhdf/dumper/Makefile.in HDF4.1r4/mfhdf/dumper/Makefile.in
+--- HDF4.1r4.orig/mfhdf/dumper/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/mfhdf/dumper/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -76,7 +76,7 @@
+ 
+ # ------------ General Macros for NETCDF --------------------
+ INCDIR	 = $(prefix)/include
+-HDF_LIB  = $(TOP_SRCDIR)/hdf/src/libdf.a
++HDF_LIB  = -L../../hdf/src/.libs -ldf
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+@@ -126,7 +126,7 @@
+ LD_NETCDF	= ../libsrc/libmfhdf.a
+ OBJS		=  hdp.o hdp_list.o hdp_sds.o hdp_util.o hdp_vd.o hdp_vg.o hdp_rig.o show.o hdp_dump.o hdp_gr.o
+ #LD_XDR		= @LD_XDR@
+-LD_NETCDF	= -L../libsrc -lmfhdf
++LD_NETCDF	= -L../libsrc/.libs -lmfhdf
+ LIBS		= $(LD_NETCDF) $(LD_XDR) $(HDF_LIB) $(LIBSX) $(JPEG_LIB) $(ZLIB_LIB)
+ prefix		= ../../..
+ GARBAGE		= $(PROGRAM) *.o
+@@ -139,7 +139,7 @@
+ 	  $(MAKE) $(MFLAGS) $(LOCAL_MACROS) FMPOOL_FLAGS="$(FMPOOL_FLAGS) -I$(FMPOOL_INC)" $(PROGRAM); \
+ 	fi
+ 
+-debug:  $(PROGRAM)  ../libsrc/libmfhdf.a
++debug:  $(PROGRAM)  ../libsrc/libmfhdf.la
+ 	purify $(CC) $(CFLAGS) $(CFLAGS_NETCDF) $(OBJS) $(LIBS) -o phdp
+ 
+ 
+diff -Nur HDF4.1r4.orig/mfhdf/fortran/Makefile.in HDF4.1r4/mfhdf/fortran/Makefile.in
+--- HDF4.1r4.orig/mfhdf/fortran/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/mfhdf/fortran/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -157,7 +157,7 @@
+ 		config/netcdf-convex.inc config/jackets-convex.c config/ftest-convex.f \
+ 		config/netcdf-unicos.inc config/jackets-unicos.c config/ftest-unicos.f
+ 
+-LIBOBJS		= jackets.o mfsdf.o mfsdff.o
++LIBOBJS		= jackets.lo mfsdf.lo mfsdff.lo
+ LIBNAME		= mfhdf
+ #REMOTE_LIBRARY	= ../libsrc/lib$(LIBNAME).a
+ REMOTE_LIBRARY	= $(srcdir)/../libsrc/lib$(LIBNAME).a
+@@ -181,9 +181,9 @@
+ 
+ nall::         FORCE
+ 	@if test -z "$(FMPOOL_FLAGS)"; then \
+-	  $(MAKE) $(MFLAGS) $(LOCAL_MACROS) netcdf.inc $(REMOTE_LIBRARY); \
++	  $(MAKE) $(MFLAGS) $(LOCAL_MACROS) netcdf.inc $(LIBOBJS); \
+ 	else		 \
+-	  $(MAKE) $(MFLAGS) $(LOCAL_MACROS) FMPOOL_FLAGS="$(FMPOOL_FLAGS) -I$(FMPOOL_INC)" netcdf.inc $(REMOTE_LIBRARY); \
++	  $(MAKE) $(MFLAGS) $(LOCAL_MACROS) FMPOOL_FLAGS="$(FMPOOL_FLAGS) -I$(FMPOOL_INC)" netcdf.inc $(LIBOBJS); \
+ 	fi
+ 
+ test:		FORCE
+@@ -215,7 +215,7 @@
+ #
+ 
+ .SUFFIXES:
+-.SUFFIXES:	.so .o .i .c .fc .f .F .l .y
++.SUFFIXES:	.so .o .lo .i .c .fc .f .F .l .y
+ 
+ # ###########################################################################
+ # General Macros: (moved to make file fragment )
+@@ -275,6 +275,8 @@
+ #
+ .f.o:
+ 	$(FC) -c $(FFLAGS) $<
++.f.lo:
++	libtool --mode=compile $(FC) -c $(FFLAGS) $<
+ .F.o:
+ 	ln -s $< $$$$.c \
+ 	&& $(CPP) -DUD_FORTRAN_SOURCE $(CPPFLAGS) $(CPPFLAGS_NETCDF) $$$$.c \
+@@ -303,6 +305,8 @@
+ #
+ .c.o:
+ 	$(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
++.c.lo:
++	libtool $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
+ 
+ # Compile lex(1) code.  This rule is here to ensure the use of CPPFLAGS.
+ # 
+diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.in
+--- HDF4.1r4.orig/mfhdf/libsrc/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/mfhdf/libsrc/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -76,7 +76,7 @@
+ 
+ # ------------ General Macros for NETCDF --------------------
+ INCDIR	 = $(prefix)/include
+-HDF_LIB  = $(TOP_SRCDIR)/hdf/src/libdf.a
++HDF_LIB  = -L../../hdf/src/.libs -ldf
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+@@ -140,15 +140,16 @@
+ 		config/netcdf-solarisx86.h config/netcdf-convex.h \
+ 		config/netcdf-unicos.h
+ 
+-LIBOBJS		= array.o attr.o cdf.o dim.o file.o iarray.o error.o \
+-		  globdef.o putget.o putgetg.o sharray.o string.o var.o \
+-		  $(XDRFILE).o hdfsds.o mfsd.o nssdc.o
++LIBOBJS		= array.lo attr.lo cdf.lo dim.lo file.lo iarray.lo error.lo \
++		  globdef.lo putget.lo putgetg.lo sharray.lo string.lo var.lo \
++		  $(XDRFILE).lo hdfsds.lo mfsd.lo nssdc.lo \
++		  ../fortran/jackets.lo ../fortran/mfsdf.lo ../fortran/mfsdff.lo
+ LIBRARY		= mfhdf
+ DEBUGLIBRARY	= mfhdf_g
+ PROFILEDLIBRARY	= mfhdf_pg
+-OBJS		= $(PROGRAM).o
++OBJS		= $(PROGRAM).lo
+ #LD_XDR		= @LD_XDR@
+-LD_NETCDF	= libmfhdf.a
++LD_NETCDF	= libmfhdf.la
+ LIBS		= $(LD_NETCDF) $(LD_XDR) $(HDF_LIB) $(JPEG_LIB) $(LIBSX) $(ZLIB_LIB)
+ prefix		= ../../..
+ 
+@@ -234,7 +235,7 @@
+ #
+ 
+ .SUFFIXES:
+-.SUFFIXES:	.so .o .i .c .fc .f .F .l .y
++.SUFFIXES:	.so .o .lo .i .c .fc .f .F .l .y
+ 
+ # ###########################################################################
+ # General Macros: (moved to make file fragment )
+@@ -292,6 +293,8 @@
+ #
+ .f.o:
+ 	$(FC) -c $(FFLAGS) $<
++.f.lo:
++	libtool --mode=compile $(FC) -c $(FFLAGS) $<
+ .F.o:
+ 	ln -s $< $$$$.c \
+ 	&& $(CPP) -DUD_FORTRAN_SOURCE $(CPPFLAGS) $(CPPFLAGS_NETCDF) $$$$.c \
+@@ -320,6 +323,8 @@
+ #
+ .c.o:
+ 	$(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
++.c.lo:
++	libtool $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
+ 
+ # Compile lex(1) code.  This rule is here to ensure the use of CPPFLAGS.
+ # 
+@@ -328,6 +333,11 @@
+ 	$(LEX) -t $< > $*.c
+ 	$(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $*.c
+ 	rm $*.c
++.l.lo:
++	rm -f $*.c
++	$(LEX) -t $< > $*.c
++	libtool $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $*.c
++	rm $*.c
+ 
+ # C preprocess.  
+ #   NB: 
+@@ -343,7 +353,7 @@
+ # ###########################################################################
+ # RANLIB		= @RANLIB@
+ LIBDIR		= $(prefix)/lib
+-LIB_A		= lib$(LIBRARY).a
++LIB_A		= lib$(LIBRARY).la
+ 
+ library::		$(LIB_A)
+ 
+@@ -351,9 +361,7 @@
+ # makefile in another directory prior to the execution of the following rule.
+ #
+ $(LIB_A):		$(LIBOBJS) FORCE
+-	$(AR) rcuv $@ $(LIBOBJS)
+-	$(RANLIB) $@
+-#	$(LD) -b -o libmfhdf.sl $(LIBOBJS)
++	libtool $(CC) -o $(LIB_A) $(LIBOBJS) -L../../hdf/src/.libs -ldf -lz -ljpeg -lm -rpath /usr/lib
+ 
+ # The following rule is for those makefiles needing to install object
+ # modules in a library in another directory.  They need only define 
+@@ -387,7 +395,7 @@
+ installed_libfile:	$(LIBDIR)/$(LIBFILE)
+ 
+ $(LIBDIR)/$(LIBFILE):	$(LIBDIR) $(LIBFILE)
+-	$(INSTALL_DATA) $(LIBFILE) $@
++	libtool $(INSTALL_DATA) $(LIBFILE) $@
+ 
+ dummy_libdir $(LIBDIR):
+ 	mkdir -p $@
+diff -Nur HDF4.1r4.orig/mfhdf/ncdump/Makefile.in HDF4.1r4/mfhdf/ncdump/Makefile.in
+--- HDF4.1r4.orig/mfhdf/ncdump/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/mfhdf/ncdump/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -76,7 +76,7 @@
+ 
+ # ------------ General Macros for NETCDF --------------------
+ INCDIR	 = $(prefix)/include
+-HDF_LIB  = $(TOP_SRCDIR)/hdf/src/libdf.a
++HDF_LIB  = -L../../hdf/src/.libs -ldf
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+@@ -128,7 +128,7 @@
+ LD_NETCDF	= ../libsrc/libmfhdf.a
+ OBJS		=  ncdump.o vardata.o dumplib.o
+ #LD_XDR		= @LD_XDR@
+-LD_NETCDF	= -L../libsrc -lmfhdf
++LD_NETCDF	= -L../libsrc/.libs -lmfhdf
+ LIBS		= $(LD_NETCDF) $(LD_XDR) $(HDF_LIB) $(JPEG_LIB) $(ZLIB_LIB) $(LIBSX)
+ prefix		= ../../..
+ GARBAGE		= $(PROGRAM) test0.nc test1.nc test1.cdl test2.cdl
+diff -Nur HDF4.1r4.orig/mfhdf/ncgen/Makefile.in HDF4.1r4/mfhdf/ncgen/Makefile.in
+--- HDF4.1r4.orig/mfhdf/ncgen/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/mfhdf/ncgen/Makefile.in	Mon Mar 26 13:00:51 2001
+@@ -76,7 +76,7 @@
+ 
+ # ------------ General Macros for NETCDF --------------------
+ INCDIR	 = $(prefix)/include
+-HDF_LIB  = $(TOP_SRCDIR)/hdf/src/libdf.a
++HDF_LIB  = -L../../hdf/src/.libs -ldf
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+@@ -131,7 +131,7 @@
+ 		  test.com test0.cdl \
+ 		  $(vms_stuff)
+ LIBNAME		= mfhdf
+-LD_NETCDF	= ../libsrc/libmfhdf.a $(HDF_LIB) $(JPEG_LIB) $(ZLIB_LIB)
++LD_NETCDF	= -L../libsrc/.libs -lmfhdf $(HDF_LIB) $(JPEG_LIB) $(ZLIB_LIB)
+ OBJS		= main.o generate.o load.o ncgentab.o escapes.o \
+ 		  getfill.o init.o close.o genlib.o
+ #LD_XDR		= @LD_XDR@
+diff -Nur HDF4.1r4.orig/mfhdf/nctest/Makefile.in HDF4.1r4/mfhdf/nctest/Makefile.in
+--- HDF4.1r4.orig/mfhdf/nctest/Makefile.in	Sun Mar 25 20:02:22 2001
++++ HDF4.1r4/mfhdf/nctest/Makefile.in	Mon Mar 26 13:02:23 2001
+@@ -76,7 +76,7 @@
+ 
+ # ------------ General Macros for NETCDF --------------------
+ INCDIR	 = $(prefix)/include
+-HDF_LIB  = $(TOP_SRCDIR)/hdf/src/libdf.a
++HDF_LIB  = -L../../hdf/src/.libs -ldf
+ HDF_INC  = $(TOP_SRCDIR)/hdf/src/
+ PABLO_HINC = $(TOP_SRCDIR)/hdf/pablo
+ FMPOOL_INC = $(TOP_SRCDIR)/hdf/fmpool
+@@ -123,7 +123,7 @@
+ 		  tests.h val.c val.h vardef.c varget.c vargetg.c varput.c \
+ 		  varputg.c vartests.c vputget.c vputgetg.c make.com
+ LIBNAME		= mfhdf
+-LD_NETCDF	= ../libsrc/libmfhdf.a
++LD_NETCDF	= -L../libsrc/.libs -lmfhdf
+ SRCS		= varget.c vargetg.c varput.c varputg.c vardef.c vartests.c \
+ 		  vputget.c vputgetg.c driver.c cdftests.c dimtests.c rec.c \
+ 		  atttests.c misctest.c add.c error.c emalloc.c val.c slabs.c
+@@ -142,17 +142,17 @@
+ 	@ echo "==========================="
+ 	./$(PROGRAM)
+ 
+-$(PROGRAM):   ../libsrc/libmfhdf.a
++$(PROGRAM):   ../libsrc/libmfhdf.la
+ 
+ install::
+ 
+ nctime:		nctime.o
+ 	$(CC) $(CFLAGS) $(CFLAGS_NETCDF) nctime.o $(LIBS) -o $@
+ 
+-debug:      ../libsrc/libmfhdf.a
++debug:      ../libsrc/libmfhdf.la
+ 	purify $(CC) $(CFLAGS) $(CFLAGS_NETCDF) $(OBJS) $(LIBS) -o pnctest
+ 
+-perfs:      ../libsrc/libmfhdf.a
++perfs:      ../libsrc/libmfhdf.la
+ 	quantify $(CC) $(CFLAGS) $(CFLAGS_NETCDF) $(OBJS) $(LIBS) -o qnctest
+ 
+ saber_src:
