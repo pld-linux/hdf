@@ -1,17 +1,22 @@
+#
+# Conditional build:
+%bcond_without	szip	# build without SZIP support
+#
 Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2r0
+Version:	4.2r1
 Release:	1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/src/HDF%{version}.tar.gz
-# Source0-md5:	3cede01c62864f5a902ef8e06a525aae
+# Source0-md5:	9082c6fa913b9188452fa6c5217e1573
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-opt.patch
 Patch2:		%{name}-morearchs.patch
+Patch3:		%{name}-nosz.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -21,6 +26,7 @@ BuildRequires:	gcc-g77
 BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libtool >= 2:1.4d-3
+%{?with_szip:BuildRequires:	szip-devel >= 2.0}
 BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -54,8 +60,9 @@ Summary:	HDF library development package
 Summary(pl):	Pliki nag³ówkowe biblioteki HDF
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libjpeg-devel
-Requires:	zlib-devel
+Requires:	libjpeg-devel >= 6b
+%{?with_szip:Requires:	szip-devel >= 2.0}
+Requires:	zlib-devel >= 1.1.3
 
 %description devel
 Header files for HDF library.
@@ -92,6 +99,7 @@ Narzêdzia do konwersji z i do formatu HDF.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %ifarch ppc ppc64 sparc sparcv9 sparc64
 %{__perl} -pi -e 's/^SWAP.*$/SWAP=/' config/mh-linux
@@ -104,7 +112,8 @@ cp -f /usr/share/automake/config.* hdf/fmpool
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-%configure
+%configure \
+	%{?with_szip:--with-szlib}
 
 %{__make}
 
@@ -146,8 +155,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libmfhdf.so
 %{_libdir}/libdf.la
 %{_libdir}/libmfhdf.la
-# static-only stub
-%{_libdir}/libudport.a
 %{_includedir}/hdf
 %{_mandir}/man[37]/*
 
