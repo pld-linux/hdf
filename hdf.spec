@@ -54,6 +54,8 @@ Summary:	HDF library development package
 Summary(pl):	Pliki nag³ówkowe biblioteki HDF
 Group:		Development/Libraries
 Requires:	%{name} = %{version}
+Requires:	libjpeg-devel
+Requires:	zlib-devel
 
 %description devel
 Header files for HDF library.
