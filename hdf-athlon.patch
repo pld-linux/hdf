@@ -1,0 +1,18 @@
+--- HDF4.1r5/configure.in.wiget	Mon Dec 16 18:45:00 2002
++++ HDF4.1r5/configure.in	Mon Dec 16 18:49:49 2002
+@@ -81,6 +81,7 @@
+   mips*-sgi-irix5*)       host_makefile_frag=config/mh-irix5 ;;
+   mips*-sgi-irix4*)       host_makefile_frag=config/mh-irix4 ;;
+   i[3456]86-*-linux*)     host_makefile_frag=config/mh-linux ;;
++  athlon-*-linux*)        host_makefile_frag=config/mh-linux ;;
+   i[3456]86-*-freebsd*)   host_makefile_frag=config/mh-fbsd ;;
+   ia64-*-*)               host_makefile_frag=config/mh-ia64 ;;
+   *-ibm-aix*)             host_makefile_frag=config/mh-aix ;;
+@@ -157,6 +158,7 @@
+   mips*-sgi-irix5*)       files="mfhdf/libsrc/config/netcdf-irix5.h mfhdf/fortran/config/jackets-irix5.c mfhdf/fortran/config/netcdf-irix5.inc mfhdf/fortran/config/ftest-irix5.f" ;;
+   mips*-sgi-irix4*)       files="mfhdf/libsrc/config/netcdf-irix4.h mfhdf/fortran/config/jackets-irix4.c mfhdf/fortran/config/netcdf-irix4.inc mfhdf/fortran/config/ftest-irix4.f" ;;
+   i[3456]86-*-linux*)     files="mfhdf/libsrc/config/netcdf-linux.h mfhdf/fortran/config/jackets-linux.c mfhdf/fortran/config/netcdf-linux.inc mfhdf/fortran/config/ftest-linux.f" ;;
++  athlon-*-linux*)     files="mfhdf/libsrc/config/netcdf-linux.h mfhdf/fortran/config/jackets-linux.c mfhdf/fortran/config/netcdf-linux.inc mfhdf/fortran/config/ftest-linux.f" ;;
+   i[3456]86-*-freebsd*)   files="mfhdf/libsrc/config/netcdf-fbsd.h mfhdf/fortran/config/jackets-fbsd.c mfhdf/fortran/config/netcdf-fbsd.inc mfhdf/fortran/config/ftest-fbsd.f" ;;
+   ia64-*-*)               files="mfhdf/libsrc/config/netcdf-ia64.h mfhdf/fortran/config/jackets-ia64.c mfhdf/fortran/config/netcdf-ia64.inc mfhdf/fortran/config/ftest-ia64.f" ;;
+   *-ibm-aix*)             files="mfhdf/libsrc/config/netcdf-aix.h mfhdf/fortran/config/jackets-aix.c mfhdf/fortran/config/netcdf-aix.inc mfhdf/fortran/config/ftest-aix.f" ;;
