@@ -471,10 +471,11 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
 @@ -351,9 +361,7 @@
  # makefile in another directory prior to the execution of the following rule.
  #
- $(LIB_A):		$(LIBOBJS) FORCE
+-$(LIB_A):		$(LIBOBJS) FORCE
 -	$(AR) rcuv $@ $(LIBOBJS)
 -	$(RANLIB) $@
 -#	$(LD) -b -o libmfhdf.sl $(LIBOBJS)
++$(LIB_A):		$(LIBOBJS)
 +	libtool --mode=link $(CC) -o $(LIB_A) $(LIBOBJS) ../../hdf/src/libdf.la -lz -ljpeg -lm -rpath $(LIBDIR)
  
  # The following rule is for those makefiles needing to install object
