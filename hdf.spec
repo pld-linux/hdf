@@ -17,7 +17,7 @@ BuildRequires:	flex
 BuildRequires:	gcc-g77
 BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
-BuildRequires:	libtool >= 0:1.4.2
+BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -97,16 +97,11 @@ install -m755 /usr/share/libtool/config.{guess,sub} hdf/jpeg
 ./configure %{_target_platform} \
 	--prefix=%{_prefix} --exec-prefix=%{_exec_prefix}
 
-# libtool 1.4d requires --tag for g77, but doesn't have good tag for g77
-grep -q -e '--tag' `which libtool` && LTTAG="--tag=dummy"
+# libtool 1.4d requires --tag for g77, libtool 1.4.2 doesn't accept --tag
+grep -q -e '--tag' `which libtool` && LTTAG="--tag=F77"
 
 %{__make} CFLAGS="%{rpmcflags} -ansi -D_BSD_SOURCE -DHAVE_NETCDF" \
 	FFLAGS="%{rpmcflags}" YACC="bison -y" LTTAG="$LTTAG"
-
-# avoid relinking
-cd mfhdf/libsrc
-sed -e '/^relink_command/d' libmfhdf.la > libmfhdf.la.tmp
-mv -f libmfhdf.la.tmp libmfhdf.la
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -129,12 +124,6 @@ for i in ncdump ncgen ; do
 	mv -f $RPM_BUILD_ROOT%{_bindir}/$i $RPM_BUILD_ROOT%{_bindir}/hdf$i
 	mv -f $RPM_BUILD_ROOT/usr/man/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
 done
-
-# remove unwanted path from libtool script
-cat $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la | \
-	awk '/^dependency_libs/ { gsub("-L[ \t]*[^ \t]*/\.libs ","") } //' \
-	> $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la.tmp
-mv -f $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la.tmp $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la
 
 bzip2 -dc %{SOURCE1} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 

@@ -24,7 +24,7 @@ diff -Nur HDF4.1r4.orig/hdf/src/Makefile.in HDF4.1r4/hdf/src/Makefile.in
  	$(CC) $(CPPFLAGS) $(ALL_CFLAGS) -c $<
  
 +.c.lo:
-+	libtool $(CC) $(CPPFLAGS) $(ALL_CFLAGS) -c $<
++	libtool --mode=compile $(CC) $(CPPFLAGS) $(ALL_CFLAGS) -c $<
 +
  .f.o:
  	$(FC) $(FFLAGS) -c $<
@@ -75,13 +75,13 @@ diff -Nur HDF4.1r4.orig/hdf/src/Makefile.in HDF4.1r4/hdf/src/Makefile.in
 -	$(RANLIB) libdf-inst.a
 -	ln -s libdf-inst.a libdf.a
 +libdf.la: $(COBJS) $(FOBJS)
-+	libtool $(CC) -o libdf.la $(COBJS) $(FOBJS) -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o libdf.la $(COBJS) $(FOBJS) -lz -ljpeg -lm -rpath /usr/lib
 +
 +nofort-libdf.la: $(COBJS)
-+	libtool $(CC) -o libdf.la $(COBJS) -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o libdf.la $(COBJS) -lz -ljpeg -lm -rpath /usr/lib
 +
 +nofort-libdf-inst.la:   $(COBJS) $(PCOBJS)
-+	libtool $(CC) -o libdf-inst.la $(COBJS) $(PCOBJS) -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o libdf-inst.la $(COBJS) $(PCOBJS) -lz -ljpeg -lm -rpath /usr/lib
 +	ln -s libdf-inst.la libdf.la
  
  
@@ -102,7 +102,7 @@ diff -Nur HDF4.1r4.orig/hdf/src/Makefile.in HDF4.1r4/hdf/src/Makefile.in
 -	$(INSTALL_DATA) $(TARGETLIB) $(libdir)/$(TARGETLIB).n
 -	( cd $(libdir) ; $(RANLIB) $(libdir)/$(TARGETLIB).n )
 -	mv -f $(libdir)/$(TARGETLIB).n $(libdir)/$(TARGETLIB)
-+	libtool $(INSTALL_DATA) $(TARGETLIB) $(libdir)
++	libtool --mode=install $(INSTALL_DATA) $(TARGETLIB) $(libdir)
  
  install-headers: FORCE
  	@case "$(FC)" in \
@@ -382,7 +382,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/fortran/Makefile.in HDF4.1r4/mfhdf/fortran/Makefil
  .c.o:
  	$(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
 +.c.lo:
-+	libtool $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
++	libtool --mode=compile $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
  
  # Compile lex(1) code.  This rule is here to ensure the use of CPPFLAGS.
  # 
@@ -443,7 +443,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
  .c.o:
  	$(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
 +.c.lo:
-+	libtool $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
++	libtool --mode=compile $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $<
  
  # Compile lex(1) code.  This rule is here to ensure the use of CPPFLAGS.
  # 
@@ -454,7 +454,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
 +.l.lo:
 +	rm -f $*.c
 +	$(LEX) -t $< > $*.c
-+	libtool $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $*.c
++	libtool --mode=compile $(CC) -c $(CPPFLAGS) $(CPPFLAGS_NETCDF) $(CFLAGS) $(CFLAGS_NETCDF) $*.c
 +	rm $*.c
  
  # C preprocess.  
@@ -475,7 +475,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
 -	$(AR) rcuv $@ $(LIBOBJS)
 -	$(RANLIB) $@
 -#	$(LD) -b -o libmfhdf.sl $(LIBOBJS)
-+	libtool $(CC) -o $(LIB_A) $(LIBOBJS) -L../../hdf/src -ldf -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o $(LIB_A) $(LIBOBJS) ../../hdf/src/libdf.la -lz -ljpeg -lm -rpath /usr/lib
  
  # The following rule is for those makefiles needing to install object
  # modules in a library in another directory.  They need only define 
@@ -484,7 +484,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
  
  $(LIBDIR)/$(LIBFILE):	$(LIBDIR) $(LIBFILE)
 -	$(INSTALL_DATA) $(LIBFILE) $@
-+	libtool $(INSTALL_DATA) $(LIBFILE) $@
++	libtool --mode=install $(INSTALL_DATA) $(LIBFILE) $@
  
  dummy_libdir $(LIBDIR):
  	mkdir -p $@
