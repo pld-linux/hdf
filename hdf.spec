@@ -18,6 +18,7 @@ BuildRequires:	gcc-g77
 BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libtool >= 0:1.4.2
+BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 ExclusiveArch:	%{ix86} alpha
