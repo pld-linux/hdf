@@ -1,6 +1,6 @@
---- HDF4.2r0/config/linux-gnu.orig	2003-10-31 00:55:17.000000000 +0100
-+++ HDF4.2r0/config/linux-gnu	2004-03-06 13:27:44.060752280 +0100
-@@ -101,7 +101,7 @@
+--- HDF4.2r1/config/linux-gnu.orig	2004-12-08 00:04:44.000000000 +0100
++++ HDF4.2r1/config/linux-gnu	2005-02-27 21:30:49.561220144 +0100
+@@ -120,7 +120,7 @@
      CFLAGS="$CFLAGS"
      DEBUG_CFLAGS="-g -fverbose-asm"
      DEBUG_CPPFLAGS=
@@ -9,7 +9,7 @@
      PROD_CPPFLAGS=
      PROFILE_CFLAGS="-pg"
      PROFILE_CPPFLAGS=
-@@ -111,7 +111,7 @@
+@@ -130,7 +130,7 @@
      CFLAGS="$CFLAGS"
      DEBUG_CFLAGS="-g"
      DEBUG_CPPFLAGS=
@@ -18,7 +18,7 @@
      PROD_CPPFLAGS=
      PROFILE_CFLAGS="-pg"
      PROFILE_CPPFLAGS=
-@@ -122,14 +122,14 @@
+@@ -141,7 +141,7 @@
    g77)
      FFLAGS="$FFLAGS -Wsign-compare"
      DEBUG_FFLAGS="-g"
@@ -27,28 +27,12 @@
      PROFILE_FFLAGS="-pg"
      ;;
  
-   *)
-     FFLAGS="$FFLAGS"
+@@ -149,7 +149,7 @@
+     CFLAGS="$CFLAGS -DH4_ABSOFT"
+     FFLAGS="$FFLAGS -YEXT_NAMES=UCS"
      DEBUG_FFLAGS="-g"
 -    PROD_FFLAGS="-O"
 +    PROD_FFLAGS=""
      PROFILE_FFLAGS="-pg"
-     ;;
- esac
-@@ -138,14 +138,14 @@
-   g++)
-     CXXFLAGS="$CXXFLAGS"
-     DEBUG_CXXFLAGS="-g -fverbose-asm"
--    PROD_CXXFLAGS="-O3 -fomit-frame-pointer"
-+    PROD_CXXFLAGS="-fomit-frame-pointer"
-     PROFILE_CXXFLAGS="-pg"
-     ;;
- 
-   *)
-     CXXFLAGS="$CXXFLAGS -ansi"
-     DEBUG_CXXFLAGS="-g"
--    PROD_CXXFLAGS="-O"
-+    PROD_CXXFLAGS=""
-     PROFILE_CXXFLAGS="-pg"
      ;;
  esac
