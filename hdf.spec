@@ -2,10 +2,11 @@ Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.1r4
-Release:	1
+Release:	2
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/tar/HDF%{version}.tar.gz
+Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 Patch0:		%{name}-system-libs.patch
 Patch1:		%{name}-strdup.patch
 Patch2:		%{name}-shared.patch
@@ -118,6 +119,8 @@ cat $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la | \
 	awk '/^dependency_libs/ { gsub("-L[ \t]*[^ \t]*/\.libs ","") } //' \
 	> $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la.tmp
 mv -f $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la.tmp $RPM_BUILD_ROOT%{_libdir}/libmfhdf.la
+
+bzip2 -dc %{SOURCE1} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
 gzip -9nf COPYING README release_notes/*
 
