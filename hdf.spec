@@ -6,7 +6,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2r1
-Release:	1
+Release:	2
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/src/HDF%{version}.tar.gz
@@ -26,6 +26,7 @@ BuildRequires:	gcc-g77
 BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libtool >= 2:1.4d-3
+BuildRequires:	netcdf-devel
 %{?with_szip:BuildRequires:	szip-devel >= 2.0}
 BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.3
