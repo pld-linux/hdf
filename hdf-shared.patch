@@ -75,13 +75,13 @@ diff -Nur HDF4.1r4.orig/hdf/src/Makefile.in HDF4.1r4/hdf/src/Makefile.in
 -	$(RANLIB) libdf-inst.a
 -	ln -s libdf-inst.a libdf.a
 +libdf.la: $(COBJS) $(FOBJS)
-+	libtool --mode=link $(CC) -o libdf.la $(COBJS) $(FOBJS) -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o libdf.la $(COBJS) $(FOBJS) -lz -ljpeg -lm -rpath $(libdir)
 +
 +nofort-libdf.la: $(COBJS)
-+	libtool --mode=link $(CC) -o libdf.la $(COBJS) -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o libdf.la $(COBJS) -lz -ljpeg -lm -rpath $(libdir)
 +
 +nofort-libdf-inst.la:   $(COBJS) $(PCOBJS)
-+	libtool --mode=link $(CC) -o libdf-inst.la $(COBJS) $(PCOBJS) -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o libdf-inst.la $(COBJS) $(PCOBJS) -lz -ljpeg -lm -rpath $(libdir)
 +	ln -s libdf-inst.la libdf.la
  
  
@@ -475,7 +475,7 @@ diff -Nur HDF4.1r4.orig/mfhdf/libsrc/Makefile.in HDF4.1r4/mfhdf/libsrc/Makefile.
 -	$(AR) rcuv $@ $(LIBOBJS)
 -	$(RANLIB) $@
 -#	$(LD) -b -o libmfhdf.sl $(LIBOBJS)
-+	libtool --mode=link $(CC) -o $(LIB_A) $(LIBOBJS) ../../hdf/src/libdf.la -lz -ljpeg -lm -rpath /usr/lib
++	libtool --mode=link $(CC) -o $(LIB_A) $(LIBOBJS) ../../hdf/src/libdf.la -lz -ljpeg -lm -rpath $(LIBDIR)
  
  # The following rule is for those makefiles needing to install object
  # modules in a library in another directory.  They need only define 
