@@ -110,7 +110,7 @@ mv -f $RPM_BUILD_ROOT%{_mandir}/man1/hdf.1 $RPM_BUILD_ROOT%{_mandir}/man7/hdf.7
 # NOTE: don't let adapter change %%{_prefix}/man to %%{_mandir}
 for i in ncdump ncgen ; do
 	mv -f $RPM_BUILD_ROOT%{_bindir}/$i $RPM_BUILD_ROOT%{_bindir}/hdf$i
-	mv -f $RPM_BUILD_ROOT%{_prefix}/man/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
+	mv -f $RPM_BUILD_ROOT%{_mandir}/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
 done
 
 # remove unwanted path from libtool script
