@@ -105,6 +105,7 @@ install -m755 /usr/share/libtool/config.{guess,sub} hdf/jpeg
 %{__make} \
 	libdir=%{_libdir} \
 	LIBDIR=%{_libdir} \
+	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} -ansi -D_BSD_SOURCE -DHAVE_NETCDF" \
 	FFLAGS="%{rpmcflags}" \
 	YACC="bison -y" \
