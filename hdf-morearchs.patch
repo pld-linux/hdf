@@ -1,0 +1,20 @@
+--- HDF4.2r0/hdf/src/hdfi.h.orig	2003-11-01 01:17:14.000000000 +0100
++++ HDF4.2r0/hdf/src/hdfi.h	2004-03-06 15:17:47.590863112 +0100
+@@ -161,7 +161,7 @@
+  *      be renamed as LONGNEINT32.
+  */
+ 
+-#if (defined(SUN) || defined(sun) || defined(__sun__) || defined(__SUNPRO_C)) & !defined(__i386)
++#if (defined(SUN) || defined(sun) || defined(__sun__) || defined(__sparc__) || defined(__SUNPRO_C)) & !defined(__i386)
+ #ifdef __STDC__
+ #define ANSISUN
+ #else /* __STDC__ */
+@@ -292,7 +292,7 @@
+ #endif /* SUN */
+ 
+ 
+-#if defined(IBM6000) || defined(_AIX)
++#if defined(IBM6000) || defined(_AIX) || defined(__powerpc__)
+ 
+ #ifndef IBM6000
+ #define IBM6000
