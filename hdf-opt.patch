@@ -1,0 +1,54 @@
+--- HDF4.2r0/config/linux-gnu.orig	2003-10-31 00:55:17.000000000 +0100
++++ HDF4.2r0/config/linux-gnu	2004-03-06 13:27:44.060752280 +0100
+@@ -101,7 +101,7 @@
+     CFLAGS="$CFLAGS"
+     DEBUG_CFLAGS="-g -fverbose-asm"
+     DEBUG_CPPFLAGS=
+-    PROD_CFLAGS="-O3 -fomit-frame-pointer"
++    PROD_CFLAGS="-fomit-frame-pointer"
+     PROD_CPPFLAGS=
+     PROFILE_CFLAGS="-pg"
+     PROFILE_CPPFLAGS=
+@@ -111,7 +111,7 @@
+     CFLAGS="$CFLAGS"
+     DEBUG_CFLAGS="-g"
+     DEBUG_CPPFLAGS=
+-    PROD_CFLAGS="-O"
++    PROD_CFLAGS=""
+     PROD_CPPFLAGS=
+     PROFILE_CFLAGS="-pg"
+     PROFILE_CPPFLAGS=
+@@ -122,14 +122,14 @@
+   g77)
+     FFLAGS="$FFLAGS -Wsign-compare"
+     DEBUG_FFLAGS="-g"
+-    PROD_FFLAGS="-O3 -fomit-frame-pointer"
++    PROD_FFLAGS="-fomit-frame-pointer"
+     PROFILE_FFLAGS="-pg"
+     ;;
+ 
+   *)
+     FFLAGS="$FFLAGS"
+     DEBUG_FFLAGS="-g"
+-    PROD_FFLAGS="-O"
++    PROD_FFLAGS=""
+     PROFILE_FFLAGS="-pg"
+     ;;
+ esac
+@@ -138,14 +138,14 @@
+   g++)
+     CXXFLAGS="$CXXFLAGS"
+     DEBUG_CXXFLAGS="-g -fverbose-asm"
+-    PROD_CXXFLAGS="-O3 -fomit-frame-pointer"
++    PROD_CXXFLAGS="-fomit-frame-pointer"
+     PROFILE_CXXFLAGS="-pg"
+     ;;
+ 
+   *)
+     CXXFLAGS="$CXXFLAGS -ansi"
+     DEBUG_CXXFLAGS="-g"
+-    PROD_CXXFLAGS="-O"
++    PROD_CXXFLAGS=""
+     PROFILE_CXXFLAGS="-pg"
+     ;;
+ esac
