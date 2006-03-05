@@ -6,7 +6,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2r1
-Release:	2
+Release:	3
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/src/HDF%{version}.tar.gz
@@ -22,7 +22,7 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	gcc-g77
+BuildRequires:	gcc-fortran
 BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libtool >= 2:1.4d-3
@@ -102,10 +102,6 @@ Narzêdzia do konwersji z i do formatu HDF.
 %patch2 -p1
 %patch3 -p1
 
-%ifarch ppc ppc64 sparc sparcv9 sparc64
-%{__perl} -pi -e 's/^SWAP.*$/SWAP=/' config/mh-linux
-%endif
-
 %build
 cp -f /usr/share/automake/config.* hdf/fmpool
 %{__libtoolize}
@@ -113,7 +109,9 @@ cp -f /usr/share/automake/config.* hdf/fmpool
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+# need to pass F77 to override F77=g77 in config/linux-gnu
 %configure \
+	F77="%{_target_cpu}-pld-linux-gfortran" \
 	%{?with_szip:--with-szlib}
 
 %{__make}
