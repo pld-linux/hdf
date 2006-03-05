@@ -102,10 +102,6 @@ Narzêdzia do konwersji z i do formatu HDF.
 %patch2 -p1
 %patch3 -p1
 
-%ifarch ppc ppc64 sparc sparcv9 sparc64
-%{__perl} -pi -e 's/^SWAP.*$/SWAP=/' config/mh-linux
-%endif
-
 %build
 cp -f /usr/share/automake/config.* hdf/fmpool
 %{__libtoolize}
