@@ -6,7 +6,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2r1
-Release:	3
+Release:	4
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current/src/HDF%{version}.tar.gz
@@ -17,6 +17,7 @@ Patch0:		%{name}-shared.patch
 Patch1:		%{name}-opt.patch
 Patch2:		%{name}-morearchs.patch
 Patch3:		%{name}-nosz.patch
+Patch4:		%{name}-link.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -100,7 +101,7 @@ Narzêdzia do konwersji z i do formatu HDF.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+%patch4 -p1
 
 %build
 cp -f /usr/share/automake/config.* hdf/fmpool
