@@ -1,0 +1,11 @@
+--- HDF4.2r1/mfhdf/hdiff/Makefile.am.orig	2006-12-14 00:06:03.000000000 +0000
++++ HDF4.2r1/mfhdf/hdiff/Makefile.am	2006-12-14 00:06:21.000000000 +0000
+@@ -20,7 +20,7 @@
+ hdiff_SOURCES = hdiff.c hdiff_array.c hdiff_gr.c hdiff_list.c hdiff_main.c  \
+                 hdiff_mattbl.c hdiff_gattr.c hdiff_misc.c hdiff_sds.c       \
+                 hdiff_table.c hdiff_vs.c
+-hdiff_LDADD = ../libsrc/libmfhdf.la $(top_builddir)/hdf/src/libdf.la @LIBS@
++hdiff_LDADD = ../libsrc/libmfhdf.la $(top_builddir)/hdf/src/libdf.la @LIBS@ -lm
+ hdiff_DEPENDENCIES = $(top_builddir)/hdf/src/libdf.la ../libsrc/libmfhdf.la
+ 
+ #############################################################################
