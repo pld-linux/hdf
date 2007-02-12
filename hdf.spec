@@ -3,7 +3,7 @@
 %bcond_without	szip	# build without SZIP support
 #
 Summary:	Hierarchical Data Format library
-Summary(pl):	Biblioteka HDF (Hierarchical Data Format)
+Summary(pl.UTF-8):   Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2r1
 Release:	5
@@ -47,19 +47,19 @@ uncompressed 8-bit and 24-bit raster images with palettes,
 n-Dimensional scientific datasets and binary tables. An interface is
 also included that allows arbitray grouping of other HDF objects.
 
-%description -l pl
-HDF jest wieloobiektowym formatem plików u³atwiaj±cym przenoszenie
-ró¿nych danych naukowych pomiêdzy ró¿nymi komputerami i systemami
-operacyjnymi. Aktualnie obs³ugiwane s± m.in. Cray, HP, Vax, Sun, IBM
+%description -l pl.UTF-8
+HDF jest wieloobiektowym formatem plikÃ³w uÅ‚atwiajÄ…cym przenoszenie
+rÃ³Å¼nych danych naukowych pomiÄ™dzy rÃ³Å¼nymi komputerami i systemami
+operacyjnymi. Aktualnie obsÅ‚ugiwane sÄ… m.in. Cray, HP, Vax, Sun, IBM
 RS/6000, Silicon Graphics, Macintosh i IBM PC. HDF zawiera interfejsy
-do Fortranu i C oraz narzêdzia do przygotowywania plików z danymi.
+do Fortranu i C oraz narzÄ™dzia do przygotowywania plikÃ³w z danymi.
 Biblioteka pozwala na przechowywanie i odczytywanie skompresowanych
-lub nie 8-bitowych i 24-bitowych obrazków z palet±, wielowymiarowych
-zestawów danych itp.
+lub nie 8-bitowych i 24-bitowych obrazkÃ³w z paletÄ…, wielowymiarowych
+zestawÃ³w danych itp.
 
 %package devel
 Summary:	HDF library development package
-Summary(pl):	Pliki nag³ówkowe biblioteki HDF
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe biblioteki HDF
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	libjpeg-devel >= 6b
@@ -69,32 +69,32 @@ Requires:	zlib-devel >= 1.1.3
 %description devel
 Header files for HDF library.
 
-%description devel -l pl
-Pliki nag³ówkowe biblioteki HDF.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe biblioteki HDF.
 
 %package static
 Summary:	HDF static library
-Summary(pl):	Statyczna biblioteka HDF
+Summary(pl.UTF-8):   Statyczna biblioteka HDF
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static version of HDF library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna wersja biblioteki HDF.
 
 %package progs
 Summary:	HDF utilities
-Summary(pl):	Narzêdzia do plików HDF
+Summary(pl.UTF-8):   NarzÄ™dzia do plikÃ³w HDF
 Group:		Applications/File
 Requires:	%{name} = %{version}-%{release}
 
 %description progs
 Utilities to convert from/to HDF format.
 
-%description progs -l pl
-Narzêdzia do konwersji z i do formatu HDF.
+%description progs -l pl.UTF-8
+NarzÄ™dzia do konwersji z i do formatu HDF.
 
 %prep
 %setup -q -n HDF%{version}
