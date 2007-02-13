@@ -3,7 +3,7 @@
 %bcond_without	szip	# build without SZIP support
 #
 Summary:	Hierarchical Data Format library
-Summary(pl.UTF-8):   Biblioteka HDF (Hierarchical Data Format)
+Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2r1
 Release:	5
@@ -59,7 +59,7 @@ zestawów danych itp.
 
 %package devel
 Summary:	HDF library development package
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki HDF
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki HDF
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	libjpeg-devel >= 6b
@@ -74,7 +74,7 @@ Pliki nagłówkowe biblioteki HDF.
 
 %package static
 Summary:	HDF static library
-Summary(pl.UTF-8):   Statyczna biblioteka HDF
+Summary(pl.UTF-8):	Statyczna biblioteka HDF
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -86,7 +86,7 @@ Statyczna wersja biblioteki HDF.
 
 %package progs
 Summary:	HDF utilities
-Summary(pl.UTF-8):   Narzędzia do plików HDF
+Summary(pl.UTF-8):	Narzędzia do plików HDF
 Group:		Applications/File
 Requires:	%{name} = %{version}-%{release}
 
