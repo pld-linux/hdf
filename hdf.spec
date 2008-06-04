@@ -5,19 +5,18 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2r1
-Release:	5
+Version:	4.2r3
+Release:	1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/HDF%{version}.tar.gz
-# Source0-md5:	9082c6fa913b9188452fa6c5217e1573
+# Source0-md5:	767382a31470e795f4c4217e33a689e8
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-opt.patch
 Patch2:		%{name}-morearchs.patch
-Patch3:		%{name}-nosz.patch
-Patch4:		%{name}-link.patch
+Patch3:		%{name}-link.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -102,7 +101,6 @@ Narzędzia do konwersji z i do formatu HDF.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 %build
 cp -f /usr/share/automake/config.* hdf/fmpool
@@ -147,8 +145,10 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc COPYING README release_notes/*
-%attr(755,root,root) %{_libdir}/libdf.so.*.*
-%attr(755,root,root) %{_libdir}/libmfhdf.so.*.*
+%attr(755,root,root) %{_libdir}/libdf.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libdf.so.0
+%attr(755,root,root) %{_libdir}/libmfhdf.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmfhdf.so.0
 
 %files devel
 %defattr(644,root,root,755)
@@ -157,7 +157,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdf.la
 %{_libdir}/libmfhdf.la
 %{_includedir}/hdf
-%{_mandir}/man[37]/*
+%{_mandir}/man3/gr_chunk.3*
+%{_mandir}/man7/hdf.7*
 
 %files static
 %defattr(644,root,root,755)
