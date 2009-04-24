@@ -5,18 +5,17 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2r3
-Release:	2
+Version:	4.2r4
+Release:	1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/HDF%{version}.tar.gz
-# Source0-md5:	767382a31470e795f4c4217e33a689e8
+# Source0-md5:	cbcfcdb65f27b743c6001c17619704a8
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-opt.patch
 Patch2:		%{name}-morearchs.patch
-Patch3:		%{name}-link.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -100,7 +99,9 @@ Narzędzia do konwersji z i do formatu HDF.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+
+# evil -R
+:> config/commence.am
 
 %build
 cp -f /usr/share/automake/config.* hdf/fmpool
@@ -112,9 +113,11 @@ cp -f /usr/share/automake/config.* hdf/fmpool
 # need to pass F77 to override F77=g77 in config/linux-gnu
 %configure \
 	F77="%{_target_cpu}-pld-linux-gfortran" \
+	--enable-shared \
 	%{?with_szip:--with-szlib}
 
-%{__make}
+%{__make} \
+	libmfhdf_la_LIBADD=$(pwd)/hdf/src/libdf.la
 
 %install
 rm -rf $RPM_BUILD_ROOT
