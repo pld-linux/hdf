@@ -5,17 +5,19 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2r4
-Release:	3
+Version:	4.2.5
+Release:	1
+Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
-Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/HDF%{version}.tar.gz
-# Source0-md5:	cbcfcdb65f27b743c6001c17619704a8
+Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/hdf-%{version}.tar.bz2
+# Source0-md5:	91bc17ec735b52736507570a530fe8a9
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-opt.patch
 Patch2:		%{name}-morearchs.patch
+Patch3:		%{name}-jpeg.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -59,7 +61,7 @@ zestawów danych itp.
 Summary:	HDF library development package
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki HDF
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	libjpeg-devel >= 6b
 %{?with_szip:Requires:	szip-devel >= 2.0}
 Requires:	zlib-devel >= 1.1.3
@@ -74,7 +76,7 @@ Pliki nagłówkowe biblioteki HDF.
 Summary:	HDF static library
 Summary(pl.UTF-8):	Statyczna biblioteka HDF
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Static version of HDF library.
@@ -86,7 +88,7 @@ Statyczna wersja biblioteki HDF.
 Summary:	HDF utilities
 Summary(pl.UTF-8):	Narzędzia do plików HDF
 Group:		Applications/File
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description progs
 Utilities to convert from/to HDF format.
@@ -95,16 +97,16 @@ Utilities to convert from/to HDF format.
 Narzędzia do konwersji z i do formatu HDF.
 
 %prep
-%setup -q -n HDF%{version}
+%setup -q
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # evil -R
 :> config/commence.am
 
 %build
-cp -f /usr/share/automake/config.* hdf/fmpool
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
@@ -121,7 +123,7 @@ cp -f /usr/share/automake/config.* hdf/fmpool
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_libdir},%{_mandir}/man{3,7},%{_includedir}/hdf}
+install -d $RPM_BUILD_ROOT{%{_mandir}/man{3,7},%{_includedir}/hdf}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -147,11 +149,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING README release_notes/*
+%doc COPYING README.txt release_notes/{HISTORY,RELEASE,bugs_fixed,misc_docs}.txt
 %attr(755,root,root) %{_libdir}/libdf.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libdf.so.0
 %attr(755,root,root) %{_libdir}/libmfhdf.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmfhdf.so.0
+%{_libdir}/libhdf4.settings
 
 %files devel
 %defattr(644,root,root,755)
