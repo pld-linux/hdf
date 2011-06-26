@@ -5,19 +5,19 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2.5
+Version:	4.2.6
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/hdf-%{version}.tar.bz2
-# Source0-md5:	91bc17ec735b52736507570a530fe8a9
+# Source0-md5:	eed281ded7f81f6ba1a3b1b1d5109bfe
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-opt.patch
 Patch2:		%{name}-morearchs.patch
-Patch3:		%{name}-jpeg.patch
+Patch3:		%{name}-link.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -104,7 +104,7 @@ Narzędzia do konwersji z i do formatu HDF.
 %patch3 -p1
 
 # evil -R
-:> config/commence.am
+sed -i '/^if HDF_BUILD_XDR/,/^endif/d;/^if HDF_BUILD_SHARED/,/^endif/d' config/commence.am
 
 %build
 %{__libtoolize}
@@ -118,8 +118,7 @@ Narzędzia do konwersji z i do formatu HDF.
 	--enable-shared \
 	%{?with_szip:--with-szlib}
 
-%{__make} \
-	libmfhdf_la_LIBADD=$(pwd)/hdf/src/libdf.la
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -140,6 +139,8 @@ for i in ncdump ncgen ; do
 done
 
 bzip2 -dc %{SOURCE1} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/README.hdf-man-pages
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/diff.*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -173,5 +174,51 @@ rm -rf $RPM_BUILD_ROOT
 
 %files progs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/*
-%{_mandir}/man1/*
+%attr(755,root,root) %{_bindir}/gif2hdf
+%attr(755,root,root) %{_bindir}/h4cc
+%attr(755,root,root) %{_bindir}/h4fc
+%attr(755,root,root) %{_bindir}/h4redeploy
+%attr(755,root,root) %{_bindir}/hdf24to8
+%attr(755,root,root) %{_bindir}/hdf2gif
+%attr(755,root,root) %{_bindir}/hdf2jpeg
+%attr(755,root,root) %{_bindir}/hdf8to24
+%attr(755,root,root) %{_bindir}/hdfcomp
+%attr(755,root,root) %{_bindir}/hdfed
+%attr(755,root,root) %{_bindir}/hdfimport
+%attr(755,root,root) %{_bindir}/hdfls
+%attr(755,root,root) %{_bindir}/hdfncdump
+%attr(755,root,root) %{_bindir}/hdfncgen
+%attr(755,root,root) %{_bindir}/hdfpack
+%attr(755,root,root) %{_bindir}/hdftopal
+%attr(755,root,root) %{_bindir}/hdftor8
+%attr(755,root,root) %{_bindir}/hdfunpac
+%attr(755,root,root) %{_bindir}/hdiff
+%attr(755,root,root) %{_bindir}/hdp
+%attr(755,root,root) %{_bindir}/hrepack
+%attr(755,root,root) %{_bindir}/jpeg2hdf
+%attr(755,root,root) %{_bindir}/paltohdf
+%attr(755,root,root) %{_bindir}/r8tohdf
+%attr(755,root,root) %{_bindir}/ristosds
+%attr(755,root,root) %{_bindir}/vmake
+%attr(755,root,root) %{_bindir}/vshow
+%{_mandir}/man1/fp2hdf.1*
+%{_mandir}/man1/gif2hdf.1*
+%{_mandir}/man1/hdf24to8.1*
+%{_mandir}/man1/hdf2gif.1*
+%{_mandir}/man1/hdf2jpeg.1*
+%{_mandir}/man1/hdf8to24.1*
+%{_mandir}/man1/hdfcomp.1*
+%{_mandir}/man1/hdfed.1*
+%{_mandir}/man1/hdfls.1*
+%{_mandir}/man1/hdfncdump.1*
+%{_mandir}/man1/hdfncgen.1*
+%{_mandir}/man1/hdfpack.1*
+%{_mandir}/man1/hdftopal.1*
+%{_mandir}/man1/hdftor8.1*
+%{_mandir}/man1/hdp.1*
+%{_mandir}/man1/jpeg2hdf.1*
+%{_mandir}/man1/paltohdf.1*
+%{_mandir}/man1/r8tohdf.1*
+%{_mandir}/man1/ristosds.1*
+%{_mandir}/man1/vmake.1*
+%{_mandir}/man1/vshow.1*
