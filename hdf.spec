@@ -5,13 +5,13 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2.6
+Version:	4.2.7
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/hdf-%{version}.tar.bz2
-# Source0-md5:	eed281ded7f81f6ba1a3b1b1d5109bfe
+# Source0-md5:	5217b131bfe04a16fc2acad4645b79dc
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
@@ -30,7 +30,7 @@ BuildRequires:	libtool >= 2:1.4d-3
 BuildRequires:	netcdf-devel
 %{?with_szip:BuildRequires:	szip-devel >= 2.0}
 BuildRequires:	which
-BuildRequires:	zlib-devel >= 1.1.3
+BuildRequires:	zlib-devel >= 1.1.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -64,7 +64,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	libjpeg-devel >= 6b
 %{?with_szip:Requires:	szip-devel >= 2.0}
-Requires:	zlib-devel >= 1.1.3
+Requires:	zlib-devel >= 1.1.4
 
 %description devel
 Header files for HDF library.
