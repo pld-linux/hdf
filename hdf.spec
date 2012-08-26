@@ -5,19 +5,18 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2.7
+Version:	4.2.8
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/hdf-%{version}.tar.bz2
-# Source0-md5:	5217b131bfe04a16fc2acad4645b79dc
+# Source0-md5:	380c67592e118423dc123cd4214a2cd9
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
-Patch1:		%{name}-opt.patch
-Patch2:		%{name}-morearchs.patch
-Patch3:		%{name}-link.patch
+Patch1:		%{name}-morearchs.patch
+Patch2:		%{name}-link.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -101,7 +100,6 @@ Narzędzia do konwersji z i do formatu HDF.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 # evil -R
 sed -i '/^if HDF_BUILD_XDR/,/^endif/d;/^if HDF_BUILD_SHARED/,/^endif/d' config/commence.am
