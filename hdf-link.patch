@@ -1,5 +1,5 @@
---- hdf-4.2.6/mfhdf/libsrc/Makefile.am.orig	2011-04-13 20:51:13.000000000 +0200
-+++ hdf-4.2.6/mfhdf/libsrc/Makefile.am	2011-06-26 10:26:56.004682088 +0200
+--- hdf-4.2.9/mfhdf/libsrc/Makefile.am.orig	2013-03-02 19:33:21.082121674 +0100
++++ hdf-4.2.9/mfhdf/libsrc/Makefile.am	2013-03-02 19:34:51.572117878 +0100
 @@ -32,10 +32,11 @@
  else
  libmfhdf_la_SOURCES = $(CSOURCES)
@@ -7,7 +7,7 @@
 +libmfhdf_la_LIBADD = $(top_builddir)/hdf/src/libdf.la
  
  if HDF_BUILD_XDR
- XDRLIB = ../xdr/libxdr.la
+ XDRLIB = $(top_builddir)/mfhdf/xdr/libxdr.la
 -libmfhdf_la_LIBADD = $(XDRLIB)
 +libmfhdf_la_LIBADD += $(XDRLIB)
  endif
