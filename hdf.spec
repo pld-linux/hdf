@@ -17,6 +17,7 @@ Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-morearchs.patch
 Patch2:		%{name}-link.patch
+Patch3:		%{name}-format.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -31,6 +32,9 @@ BuildRequires:	netcdf-devel
 BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+# because of mfhdf/hdfimport/hdfimport.c false positives (const strings as format arguments)
+%define		filterout_c	-Werror=format-security
 
 %description
 HDF is a multi-object file format that facilitates the transfer of
@@ -100,6 +104,7 @@ Narzędzia do konwersji z i do formatu HDF.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # evil -R
 sed -i '/^if HDF_BUILD_XDR/,/^endif/d;/^if HDF_BUILD_SHARED/,/^endif/d' config/commence.am
