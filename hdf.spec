@@ -5,13 +5,13 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2.9
+Version:	4.2.10
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/hdf-%{version}.tar.bz2
-# Source0-md5:	c268a703f334ee4987fa710a0de9b9fc
+# Source0-md5:	bf26b3caaf3c0090965c8995578375bd
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
@@ -99,6 +99,17 @@ Utilities to convert from/to HDF format.
 %description progs -l pl.UTF-8
 Narzędzia do konwersji z i do formatu HDF.
 
+%package examples
+Summary:	HDF example programs (source code)
+Summary(pl.UTF-8):	Przykładowe programy dla biblioteki HDF (w postaci źródłowej)
+Group:		Documentation
+
+%description examples
+HDF example programs (source code).
+
+%description examples -l pl.UTF-8
+Przykładowe programy dla biblioteki HDF (w postaci źródłowej).
+
 %prep
 %setup -q
 %patch0 -p1
@@ -128,7 +139,9 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_mandir}/man{3,7},%{_includedir}/hdf}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	EXAMPLETOPDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version} \
+	EXAMPLEDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/c \
 
 mv -f $RPM_BUILD_ROOT%{_includedir}/*.{h,inc,f90} $RPM_BUILD_ROOT%{_includedir}/hdf
 
@@ -225,3 +238,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/ristosds.1*
 %{_mandir}/man1/vmake.1*
 %{_mandir}/man1/vshow.1*
+
+%files examples
+%defattr(644,root,root,755)
+%dir %{_examplesdir}/%{name}-%{version}
+%{_examplesdir}/%{name}-%{version}/README
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/run-all-ex.sh
+%dir %{_examplesdir}/%{name}-%{version}/c
+%{_examplesdir}/%{name}-%{version}/c/*.c
+%{_examplesdir}/%{name}-%{version}/c/*.f
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/c/run-c-ex.sh
+%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/c/run-fortran-ex.sh
