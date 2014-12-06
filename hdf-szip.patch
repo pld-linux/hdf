@@ -1,0 +1,11 @@
+--- hdf-4.2.10/configure.ac.orig	2014-12-06 11:14:27.307342175 +0100
++++ hdf-4.2.10/configure.ac	2014-12-06 11:38:58.803947089 +0100
+@@ -466,7 +466,7 @@
+   yes)
+     HAVE_SZIP="yes"
+     AC_CHECK_HEADERS([szlib.h], [HAVE_SZLIB_H="yes"], [unset HAVE_SZIP])
+-    if test "x$HAVE_SZLIB" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
++    if test "x$HAVE_SZIP" = "xyes" -a "x$HAVE_SZLIB_H" = "xyes"; then
+       AC_CHECK_LIB([sz], [SZ_BufftoBuffCompress],, [unset HAVE_SZIP])
+     fi
+ 

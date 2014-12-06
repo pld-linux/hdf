@@ -6,7 +6,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2.10
-Release:	1
+Release:	2
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
@@ -18,6 +18,7 @@ Patch0:		%{name}-shared.patch
 Patch1:		%{name}-morearchs.patch
 Patch2:		%{name}-link.patch
 Patch3:		%{name}-format.patch
+Patch4:		%{name}-szip.patch
 URL:		http://hdf.ncsa.uiuc.edu/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -116,6 +117,7 @@ Przykładowe programy dla biblioteki HDF (w postaci źródłowej).
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # evil -R
 sed -i '/^if HDF_BUILD_XDR/,/^endif/d;/^if HDF_BUILD_SHARED/,/^endif/d' config/commence.am
