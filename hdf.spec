@@ -6,7 +6,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2.11
-Release:	1
+Release:	2
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
@@ -128,7 +128,11 @@ sed -i '/^if HDF_BUILD_XDR/,/^endif/d;/^if HDF_BUILD_SHARED/,/^endif/d' config/c
 %{__automake}
 # need to pass F77 to override F77=g77 in config/linux-gnu
 %configure \
+%ifarch x32
+	F77="x86_64-pld-linux-gnux32-gfortran" \
+%else
 	F77="%{_target_cpu}-pld-linux-gfortran" \
+%endif
 	--enable-shared \
 	%{?with_szip:--with-szlib}
 
