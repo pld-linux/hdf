@@ -5,20 +5,20 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2.12
+Version:	4.2.13
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
-Source0:	ftp://ftp.hdfgroup.org/HDF/HDF_Current/src/hdf-%{version}.tar.bz2
-# Source0-md5:	17a5a1a53fd7ffecf8dececfa3598c16
+Source0:	https://support.hdfgroup.org/ftp/HDF/releases/HDF%{version}/src/hdf-%{version}.tar.bz2
+# Source0-md5:	2c1b6c7fdf97738251154680b37bd86a
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-morearchs.patch
 Patch2:		%{name}-link.patch
 Patch3:		%{name}-szip.patch
-URL:		http://hdf.ncsa.uiuc.edu/
+URL:		https://support.hdfgroup.org/products/hdf4/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	bison
