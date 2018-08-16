@@ -6,7 +6,7 @@ Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
 Version:	4.2.13
-Release:	1
+Release:	2
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
