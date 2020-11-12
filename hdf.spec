@@ -1,5 +1,6 @@
 #
 # Conditional build:
+%bcond_without	java	# Java JNI interface
 %bcond_without	szip	# build without SZIP support
 #
 Summary:	Hierarchical Data Format library
@@ -26,6 +27,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gcc-fortran
 BuildRequires:	groff
+%{?with_java:BuildRequires:	jdk}
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libtirpc-devel
 BuildRequires:	libtool >= 2:1.4d-3
@@ -110,6 +112,31 @@ HDF example programs (source code).
 %description examples -l pl.UTF-8
 Przykładowe programy dla biblioteki HDF (w postaci źródłowej).
 
+%package -n java-hdf
+Summary:	Java HDF Interface (JHI)
+Summary(pl.UTF-8):	Interfejs HDF do Javy (JHI)
+Group:		Libraries/Java
+URL:		http://portal.hdfgroup.org/display/HDFVIEW/JHI+Design+Notes
+Requires:	java-slf4j >= 1.7.25
+
+%description -n java-hdf
+The Java Native Interface to the standard HDF library.
+
+%description -n java-hdf -l pl.UTF-8
+Natywny interfejs Javy (JNI) do biblioteki standardowej HDF.
+
+%package -n java-hdf-javadoc
+Summary:	Javadoc documentation for Java HDF Interface (JHI)
+Summary(pl.UTF-8):	Dokumentacja javadoc do interfejsu HDF do Javy (JHI)
+Group:		Documentation
+URL:		http://portal.hdfgroup.org/display/HDFVIEW/JHI+Design+Notes
+
+%description -n java-hdf-javadoc
+Javadoc documentation for Java HDF Interface (JHI).
+
+%description -n java-hdf-javadoc -l pl.UTF-8
+Dokumentacja javadoc do interfejsu HDF do Javy (JHI).
+
 %prep
 %setup -q
 %patch0 -p1
@@ -135,6 +162,7 @@ Przykładowe programy dla biblioteki HDF (w postaci źródłowej).
 %if "%{_ver_ge '%(%{gfortran} -dumpversion)' '10.0'}" == "1"
 	FFLAGS="%{rpmcflags} -fallow-argument-mismatch" \
 %endif
+	%{?with_java:--enable-java} \
 	--enable-shared \
 	%{?with_szip:--with-szlib}
 
@@ -148,6 +176,7 @@ install -d $RPM_BUILD_ROOT{%{_mandir}/man{3,7},%{_includedir}/hdf}
 	DESTDIR=$RPM_BUILD_ROOT \
 	EXAMPLETOPDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version} \
 	EXAMPLEDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/c \
+	hdf_javadir=%{_javadir}
 
 %{__mv} $RPM_BUILD_ROOT%{_includedir}/*.{h,inc,f90} $RPM_BUILD_ROOT%{_includedir}/hdf
 
@@ -160,6 +189,13 @@ for i in ncdump ncgen ; do
 	%{__mv} $RPM_BUILD_ROOT%{_mandir}/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
 done
 
+%if %{with java}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libhdf_java.{la,a}
+ln -sf jarhdf-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/jarhdf.jar
+install -d $RPM_BUILD_ROOT%{_javadocdir}
+cp -pr java/src/javadoc $RPM_BUILD_ROOT%{_javadocdir}/hdflib
+%endif
+
 bzip2 -dc %{SOURCE1} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/README.hdf-man-pages
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/diff.*
@@ -169,6 +205,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
+
+%post	-n java-hdf -p /sbin/ldconfig
+%postun	-n java-hdf -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -255,3 +294,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_examplesdir}/%{name}-%{version}/c/*.f
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/c/run-c-ex.sh
 %attr(755,root,root) %{_examplesdir}/%{name}-%{version}/c/run-fortran-ex.sh
+
+%if %{with java}
+%files -n java-hdf
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libhdf_java.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libhdf_java.so.0
+%attr(755,root,root) %{_libdir}/libhdf_java.so
+%{_javadir}/jarhdf-%{version}.jar
+%{_javadir}/jarhdf.jar
+
+%files -n java-hdf-javadoc
+%defattr(644,root,root,755)
+%{_javadocdir}/hdflib
+%endif
