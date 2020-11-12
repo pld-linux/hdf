@@ -159,9 +159,10 @@ Dokumentacja javadoc do interfejsu HDF do Javy (JHI).
 %else
 %define	gfortran	%{_target_cpu}-pld-linux-gfortran
 %endif
+%define	gfortran_version	%(%{gfortran} -dumpversion)
 %configure \
 	F77="%{gfortran}" \
-%if "%{_ver_ge '%(%{gfortran} -dumpversion)' '10.0'}" == "1"
+%if "%{_ver_ge '%{gfortran_version}' '10.0'}" == "1"
 	FFLAGS="%{rpmcflags} -fallow-argument-mismatch" \
 %endif
 	%{?with_java:--enable-java} \
