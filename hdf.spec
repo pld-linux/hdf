@@ -29,6 +29,7 @@ BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libtirpc-devel
 BuildRequires:	libtool >= 2:1.4d-3
+BuildRequires:	rpmbuild(macros) >= 1.750
 %{?with_szip:BuildRequires:	szip-devel >= 2.0}
 BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.4
@@ -124,11 +125,15 @@ Przykładowe programy dla biblioteki HDF (w postaci źródłowej).
 %{__autoheader}
 %{__automake}
 # need to pass F77 to override F77=g77 in config/linux-gnu
-%configure \
 %ifarch x32
-	F77="x86_64-pld-linux-gnux32-gfortran" \
+%define	gfortran	x86_64-pld-linux-gnux32-gfortran
 %else
-	F77="%{_target_cpu}-pld-linux-gfortran" \
+%define	gfortran	%{_target_cpu}-pld-linux-gfortran
+%endif
+%configure \
+	F77="%{gfortran}" \
+%if "%{_ver_ge '%(%{gfortran} -dumpversion)' '10.0'}" == "1"
+	FFLAGS="%{rpmcflags} -fallow-argument-mismatch" \
 %endif
 	--enable-shared \
 	%{?with_szip:--with-szlib}
