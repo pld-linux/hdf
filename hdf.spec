@@ -5,20 +5,21 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.2.14
+Version:	4.2.15
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	Nearly BSD, but changed sources must be marked
 Source0:	https://support.hdfgroup.org/ftp/HDF/releases/HDF%{version}/src/hdf-%{version}.tar.bz2
-# Source0-md5:	3f3bd5da84015e9221d26fb5a80094b4
+# Source0-md5:	27ab87b22c31906883a0bfaebced97cb
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
 Patch1:		%{name}-morearchs.patch
 Patch2:		%{name}-link.patch
 Patch3:		%{name}-szip.patch
-URL:		https://support.hdfgroup.org/products/hdf4/
+Patch4:		%{name}-tirpc.patch
+URL:		http://portal.hdfgroup.org/display/HDF4/HDF4
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	bison
@@ -26,15 +27,12 @@ BuildRequires:	flex
 BuildRequires:	gcc-fortran
 BuildRequires:	groff
 BuildRequires:	libjpeg-devel >= 6b
+BuildRequires:	libtirpc-devel
 BuildRequires:	libtool >= 2:1.4d-3
-BuildRequires:	netcdf-devel
 %{?with_szip:BuildRequires:	szip-devel >= 2.0}
 BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-# because of mfhdf/hdfimport/hdfimport.c false positives (const strings as format arguments)
-%define		filterout_c	-Werror=format-security
 
 %description
 HDF is a multi-object file format that facilitates the transfer of
@@ -66,6 +64,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki HDF
 Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	libjpeg-devel >= 6b
+Requires:	libtirpc-devel
 %{?with_szip:Requires:	szip-devel >= 2.0}
 Requires:	zlib-devel >= 1.1.4
 
@@ -116,9 +115,7 @@ Przykładowe programy dla biblioteki HDF (w postaci źródłowej).
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-
-# evil -R
-sed -i '/^if HDF_BUILD_XDR/,/^endif/d;/^if HDF_BUILD_SHARED/,/^endif/d' config/commence.am
+%patch4 -p1
 
 %build
 %{__libtoolize}
@@ -147,15 +144,15 @@ install -d $RPM_BUILD_ROOT{%{_mandir}/man{3,7},%{_includedir}/hdf}
 	EXAMPLETOPDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version} \
 	EXAMPLEDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/c \
 
-mv -f $RPM_BUILD_ROOT%{_includedir}/*.{h,inc,f90} $RPM_BUILD_ROOT%{_includedir}/hdf
+%{__mv} $RPM_BUILD_ROOT%{_includedir}/*.{h,inc,f90} $RPM_BUILD_ROOT%{_includedir}/hdf
 
-install man/gr_chunk.3 $RPM_BUILD_ROOT%{_mandir}/man3
-mv -f $RPM_BUILD_ROOT%{_mandir}/man1/hdf.1 $RPM_BUILD_ROOT%{_mandir}/man7/hdf.7
+cp -p man/gr_chunk.3 $RPM_BUILD_ROOT%{_mandir}/man3
+%{__mv} $RPM_BUILD_ROOT%{_mandir}/man1/hdf.1 $RPM_BUILD_ROOT%{_mandir}/man7/hdf.7
 
 # resolve conflict with netcdf
 for i in ncdump ncgen ; do
-	mv -f $RPM_BUILD_ROOT%{_bindir}/$i $RPM_BUILD_ROOT%{_bindir}/hdf$i
-	mv -f $RPM_BUILD_ROOT%{_mandir}/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
+	%{__mv} $RPM_BUILD_ROOT%{_bindir}/$i $RPM_BUILD_ROOT%{_bindir}/hdf$i
+	%{__mv} $RPM_BUILD_ROOT%{_mandir}/man1/$i.1 $RPM_BUILD_ROOT%{_mandir}/man1/hdf$i.1
 done
 
 bzip2 -dc %{SOURCE1} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}

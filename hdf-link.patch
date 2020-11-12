@@ -1,15 +1,28 @@
---- hdf-4.2.9/mfhdf/libsrc/Makefile.am.orig	2013-03-02 19:33:21.082121674 +0100
-+++ hdf-4.2.9/mfhdf/libsrc/Makefile.am	2013-03-02 19:34:51.572117878 +0100
-@@ -32,10 +32,11 @@
- else
+--- hdf-4.2.15/mfhdf/libsrc/Makefile.am.orig	2020-03-03 18:40:50.000000000 +0100
++++ hdf-4.2.15/mfhdf/libsrc/Makefile.am	2020-11-12 06:21:46.537767787 +0100
+@@ -33,7 +33,7 @@
  libmfhdf_la_SOURCES = $(CSOURCES)
  endif
-+libmfhdf_la_LIBADD = $(top_builddir)/hdf/src/libdf.la
  
- if HDF_BUILD_XDR
- XDRLIB = $(top_builddir)/mfhdf/xdr/libxdr.la
 -libmfhdf_la_LIBADD = $(XDRLIB)
-+libmfhdf_la_LIBADD += $(XDRLIB)
- endif
++libmfhdf_la_LIBADD = $(LIBHDF) $(XDRLIB)
  
  if HDF_BUILD_NETCDF
+ include_HEADERS = hdf2netcdf.h local_nc.h mfhdf.h netcdf.h mfhdfi.h mfdatainfo.h
+--- hdf-4.2.15/config/commence.am.orig	2020-03-03 18:40:50.000000000 +0100
++++ hdf-4.2.15/config/commence.am	2020-11-12 06:25:05.443356890 +0100
+@@ -27,14 +27,6 @@
+ H4CC = ${DESTDIR}$(bindir)/h4cc
+ H4FC = ${DESTDIR}$(bindir)/h4fc
+ 
+-if HDF_BUILD_XDR
+-    XDR_ADD = -R$(abs_top_builddir)/mfhdf/xdr/.libs
+-endif
+-
+-if HDF_BUILD_SHARED
+-    AM_LDFLAGS = -R$(abs_top_builddir)/mfhdf/libsrc/.libs -R$(abs_top_builddir)/hdf/src/.libs $(XDR_ADD)
+-endif
+-
+ ACLOCAL_AMFLAGS = "-I m4"
+ 
+ # .chkexe files are used to mark tests that have run successfully.
