@@ -20,6 +20,7 @@ Patch1:		%{name}-morearchs.patch
 Patch2:		%{name}-link.patch
 Patch3:		%{name}-szip.patch
 Patch4:		%{name}-tirpc.patch
+Patch5:		%{name}-opt.patch
 URL:		http://portal.hdfgroup.org/display/HDF4/HDF4
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -144,6 +145,7 @@ Dokumentacja javadoc do interfejsu HDF do Javy (JHI).
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 %{__libtoolize}

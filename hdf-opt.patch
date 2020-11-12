@@ -1,0 +1,67 @@
+--- hdf-4.2.15/config/linux-gnu.orig	2020-03-03 18:40:50.000000000 +0100
++++ hdf-4.2.15/config/linux-gnu	2020-11-12 21:56:55.160467962 +0100
+@@ -182,11 +182,11 @@
+ # value of CC may have changed above).
+ 
+ case $CC_BASENAME in
+-  gcc)
++  *gcc)
+     CFLAGS="$CFLAGS"
+     DEBUG_CFLAGS="-g -fverbose-asm"
+     DEBUG_CPPFLAGS=
+-    PROD_CFLAGS="-O3 -fomit-frame-pointer"
++    PROD_CFLAGS="-fomit-frame-pointer"
+     PROD_CPPFLAGS=
+     PROFILE_CFLAGS="-pg"
+     PROFILE_CPPFLAGS=
+@@ -196,7 +196,7 @@
+     CFLAGS="$CFLAGS"
+     DEBUG_CFLAGS="-g"
+     DEBUG_CPPFLAGS=
+-    PROD_CFLAGS="-O"
++    PROD_CFLAGS=
+     PROD_CPPFLAGS=
+     PROFILE_CFLAGS="-pg"
+     PROFILE_CPPFLAGS=
+@@ -204,33 +204,33 @@
+ esac
+ 
+ case $F77_BASENAME in 
+-  gfortran)
++  *gfortran)
+     FFLAGS="$FFLAGS"
+     DEBUG_FFLAGS="-g"
+-    PROD_FFLAGS="-O"
++    PROD_FFLAGS=
+     PROFILE_FFLAGS="-pg"
+     ;;
+ 
+-  g77)
++  *g77)
+     FFLAGS="$FFLAGS "
+     DEBUG_FFLAGS="-g"
+-    PROD_FFLAGS="-O3 -fomit-frame-pointer"
++    PROD_FFLAGS="-fomit-frame-pointer"
+     PROFILE_FFLAGS="-pg"
+     ;;
+ 
+-  f95)
++  *f95)
+     CFLAGS="$CFLAGS"
+     FFLAGS="$FFLAGS"
+     DEBUG_FFLAGS="-g"
+-    PROD_FFLAGS="-O"
++    PROD_FFLAGS=
+     PROFILE_FFLAGS="-pg"
+     ;;
+ 
+-  g95)
++  *g95)
+     CFLAGS="$CFLAGS"
+     FFLAGS="$FFLAGS -i4"
+     DEBUG_FFLAGS="-g"
+-    PROD_FFLAGS="-O"
++    PROD_FFLAGS=
+     PROFILE_FFLAGS="-pg"
+     ;;
+ esac
