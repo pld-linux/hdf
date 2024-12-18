@@ -1,12 +1,7 @@
---- hdf-4.2.15/config/linux-gnu.orig	2020-03-03 18:40:50.000000000 +0100
-+++ hdf-4.2.15/config/linux-gnu	2020-11-12 21:56:55.160467962 +0100
-@@ -182,11 +182,11 @@
- # value of CC may have changed above).
- 
- case $CC_BASENAME in
--  gcc)
-+  *gcc)
-     CFLAGS="$CFLAGS"
+--- hdf-4.2.16-2/config/gnu-flags.orig	2024-12-18 19:47:50.539445329 +0100
++++ hdf-4.2.16-2/config/gnu-flags	2024-12-18 19:47:53.502762608 +0100
+@@ -120,7 +120,7 @@ if test "X-gcc" = "X-$cc_vendor"; then
+     fi
      DEBUG_CFLAGS="-g -fverbose-asm"
      DEBUG_CPPFLAGS=
 -    PROD_CFLAGS="-O3 -fomit-frame-pointer"
@@ -14,30 +9,26 @@
      PROD_CPPFLAGS=
      PROFILE_CFLAGS="-pg"
      PROFILE_CPPFLAGS=
-@@ -196,7 +196,7 @@
-     CFLAGS="$CFLAGS"
-     DEBUG_CFLAGS="-g"
-     DEBUG_CPPFLAGS=
--    PROD_CFLAGS="-O"
-+    PROD_CFLAGS=
-     PROD_CPPFLAGS=
-     PROFILE_CFLAGS="-pg"
-     PROFILE_CPPFLAGS=
-@@ -204,33 +204,33 @@
- esac
+--- hdf-4.2.16-2/config/gnu-fflags.orig	2023-06-27 17:28:51.000000000 +0200
++++ hdf-4.2.16-2/config/gnu-fflags	2024-12-18 19:48:11.835996622 +0100
+@@ -62,14 +62,14 @@
+ # value of CC may have changed above).
  
- case $F77_BASENAME in 
+ case $F77_BASENAME in
 -  gfortran)
-+  *gfortran)
-     FFLAGS="$FFLAGS"
++  *gfortran*)
+     if test $cc_vers_major -ge 10; then
+         FFLAGS="$FFLAGS -fallow-argument-mismatch"
+     else
+         FFLAGS="$FFLAGS"
+     fi
      DEBUG_FFLAGS="-g"
 -    PROD_FFLAGS="-O"
-+    PROD_FFLAGS=
++    PROD_FFLAGS=""
      PROFILE_FFLAGS="-pg"
      ;;
  
--  g77)
-+  *g77)
+   g77)
      FFLAGS="$FFLAGS "
      DEBUG_FFLAGS="-g"
 -    PROD_FFLAGS="-O3 -fomit-frame-pointer"
@@ -45,23 +36,23 @@
      PROFILE_FFLAGS="-pg"
      ;;
  
--  f95)
-+  *f95)
+@@ -84,7 +84,7 @@ case $F77_BASENAME in
      CFLAGS="$CFLAGS"
      FFLAGS="$FFLAGS"
      DEBUG_FFLAGS="-g"
 -    PROD_FFLAGS="-O"
-+    PROD_FFLAGS=
++    PROD_FFLAGS=""
      PROFILE_FFLAGS="-pg"
      ;;
  
--  g95)
-+  *g95)
+@@ -92,7 +92,7 @@ case $F77_BASENAME in
      CFLAGS="$CFLAGS"
      FFLAGS="$FFLAGS -i4"
      DEBUG_FFLAGS="-g"
 -    PROD_FFLAGS="-O"
-+    PROD_FFLAGS=
++    PROD_FFLAGS=""
      PROFILE_FFLAGS="-pg"
      ;;
  esac
+--- ../BUILD/hdf-4.2.16-2/config/gnu-fflags.orig	2024-12-18 20:41:47.971906652 +0100
++++ ../BUILD/hdf-4.2.16-2/config/gnu-fflags	2024-12-18 20:54:55.677639283 +0100
