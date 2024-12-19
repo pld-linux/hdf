@@ -16,7 +16,7 @@
  
  case $F77_BASENAME in
 -  gfortran)
-+  *gfortran*)
++  *gfortran)
      if test $cc_vers_major -ge 10; then
          FFLAGS="$FFLAGS -fallow-argument-mismatch"
      else
@@ -54,5 +54,16 @@
      PROFILE_FFLAGS="-pg"
      ;;
  esac
---- ../BUILD/hdf-4.2.16-2/config/gnu-fflags.orig	2024-12-18 20:41:47.971906652 +0100
-+++ ../BUILD/hdf-4.2.16-2/config/gnu-fflags	2024-12-18 20:54:55.677639283 +0100
+--- hdf-4.2.16-2/config/linux-gnu.orig	2023-03-02 20:23:25.000000000 +0100
++++ hdf-4.2.16-2/config/linux-gnu	2024-12-19 19:46:41.375974527 +0100
+@@ -46,6 +46,10 @@ else
+         f95*|pgf90*)
+             ;;
+ 
++        *gfortran)
++            F77_BASENAME=gfortran
++            ;;
++
+         *)
+             # Figure out which compiler we are using: pgf90 or Absoft f95
+             RM='rm -f'

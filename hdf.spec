@@ -147,6 +147,10 @@ Dokumentacja javadoc do interfejsu HDF do Javy (JHI).
 %patch -P3 -p1
 %patch -P5 -p1
 
+%ifarch x32
+ln -s linux-gnu config/linux-gnux32
+%endif
+
 %build
 %{__libtoolize}
 %{__aclocal}
@@ -159,12 +163,8 @@ Dokumentacja javadoc do interfejsu HDF do Javy (JHI).
 %else
 %define	gfortran	%{_target_cpu}-pld-linux-gfortran
 %endif
-%define	gfortran_version	%(%{gfortran} -dumpversion)
 %configure \
 	F77="%{gfortran}" \
-%if "%{_ver_ge '%{gfortran_version}' '10.0'}" == "1"
-	XXXFFLAGS="%{rpmcflags} -fallow-argument-mismatch" \
-%endif
 	--enable-fortran \
 	%{?with_java:--enable-java} \
 	--enable-shared \
