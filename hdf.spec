@@ -6,22 +6,17 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-%define	basever	4.2.16
-%define	subver	2
-Version:	%{basever}.%{subver}
-%define	origver	%{basever}-%{subver}
+Version:	4.3.0
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	BSD-like
 # latest releases listed at https://support.hdfgroup.org/downloads/index.html
-Source0:	https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF4/HDF%{origver}/src/hdf-%{origver}.tar.bz2
-# Source0-md5:	82f834cd6217ea2ae71e035268674f7e
+Source0:	https://github.com/HDFGroup/hdf4/archive/hdf%{version}/hdf4-hdf%{version}.tar.gz
+# Source0-md5:	9789b5ad3341ce5f25fac1de231e2608
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
-Patch1:		%{name}-types.patch
-Patch3:		%{name}-szip.patch
 Patch5:		%{name}-opt.patch
 URL:		https://www.hdfgroup.org/solutions/hdf4/
 BuildRequires:	autoconf >= 2.50
@@ -40,6 +35,8 @@ BuildRequires:	which
 BuildRequires:	zlib-devel >= 1.1.4
 %{?with_szip:Requires:	libaec-szip >= 1.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		javaver	4.2.17-1
 
 %description
 HDF is a multi-object file format that facilitates the transfer of
@@ -141,10 +138,8 @@ Javadoc documentation for Java HDF Interface (JHI).
 Dokumentacja javadoc do interfejsu HDF do Javy (JHI).
 
 %prep
-%setup -q -n %{name}-%{origver}
+%setup -q -n hdf4-hdf%{version}
 %patch -P0 -p1
-%patch -P1 -p1
-%patch -P3 -p1
 %patch -P5 -p1
 
 %ifarch x32
@@ -175,18 +170,13 @@ ln -s linux-gnu config/linux-gnux32
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_mandir}/man{3,7},%{_includedir}/hdf}
+install -d $RPM_BUILD_ROOT{%{_includedir}/hdf,%{_examplesdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	EXAMPLETOPDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version} \
-	EXAMPLEDIR=$RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/c \
 	hdf_javadir=%{_javadir}
 
 %{__mv} $RPM_BUILD_ROOT%{_includedir}/*.{h,inc,f90} $RPM_BUILD_ROOT%{_includedir}/hdf
-
-cp -p man/gr_chunk.3 $RPM_BUILD_ROOT%{_mandir}/man3
-%{__mv} $RPM_BUILD_ROOT%{_mandir}/man1/hdf.1 $RPM_BUILD_ROOT%{_mandir}/man7/hdf.7
 
 # resolve conflict with netcdf
 for i in ncdump ncgen ; do
@@ -196,10 +186,12 @@ done
 
 %if %{with java}
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libhdf_java.{la,a}
-ln -sf jarhdf-%{origver}.jar $RPM_BUILD_ROOT%{_javadir}/jarhdf.jar
+ln -sf jarhdf-%{javaver}.jar $RPM_BUILD_ROOT%{_javadir}/jarhdf.jar
 install -d $RPM_BUILD_ROOT%{_javadocdir}
 cp -pr java/src/javadoc $RPM_BUILD_ROOT%{_javadocdir}/hdflib
 %endif
+
+cp -pr HDF4Examples $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 bzip2 -dc %{SOURCE1} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/README.hdf-man-pages
@@ -230,8 +222,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdf.la
 %{_libdir}/libmfhdf.la
 %{_includedir}/hdf
-%{_mandir}/man3/gr_chunk.3*
-%{_mandir}/man7/hdf.7*
 
 %files static
 %defattr(644,root,root,755)
@@ -283,7 +273,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/hdftor8.1*
 %{_mandir}/man1/hdp.1*
 %{_mandir}/man1/jpeg2hdf.1*
-%{_mandir}/man1/paltohdf.1*
+%{_mandir}/man1/paltohdf.1
 %{_mandir}/man1/r8tohdf.1*
 %{_mandir}/man1/ristosds.1*
 %{_mandir}/man1/vmake.1*
@@ -291,14 +281,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files examples
 %defattr(644,root,root,755)
-%dir %{_examplesdir}/%{name}-%{version}
-%{_examplesdir}/%{name}-%{version}/README
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/run-all-ex.sh
-%dir %{_examplesdir}/%{name}-%{version}/c
-%{_examplesdir}/%{name}-%{version}/c/*.c
-%{_examplesdir}/%{name}-%{version}/c/*.f
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/c/run-c-ex.sh
-%attr(755,root,root) %{_examplesdir}/%{name}-%{version}/c/run-fortran-ex.sh
+%{_examplesdir}/%{name}-%{version}
 
 %if %{with java}
 %files -n java-hdf
@@ -306,7 +289,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libhdf_java.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libhdf_java.so.0
 %attr(755,root,root) %{_libdir}/libhdf_java.so
-%{_javadir}/jarhdf-%{origver}.jar
+%{_javadir}/jarhdf-%{javaver}.jar
 %{_javadir}/jarhdf.jar
 
 %files -n java-hdf-javadoc
