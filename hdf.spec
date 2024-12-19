@@ -20,6 +20,7 @@ Source0:	https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF4
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
+Patch1:		%{name}-types.patch
 Patch3:		%{name}-szip.patch
 Patch5:		%{name}-opt.patch
 URL:		https://www.hdfgroup.org/solutions/hdf4/
@@ -142,6 +143,7 @@ Dokumentacja javadoc do interfejsu HDF do Javy (JHI).
 %prep
 %setup -q -n %{name}-%{origver}
 %patch -P0 -p1
+%patch -P1 -p1
 %patch -P3 -p1
 %patch -P5 -p1
 
