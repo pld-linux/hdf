@@ -6,14 +6,14 @@
 Summary:	Hierarchical Data Format library
 Summary(pl.UTF-8):	Biblioteka HDF (Hierarchical Data Format)
 Name:		hdf
-Version:	4.3.0
+Version:	4.3.1
 Release:	1
 Epoch:		1
 Group:		Libraries
 License:	BSD-like
 # latest releases listed at https://support.hdfgroup.org/downloads/index.html
 Source0:	https://github.com/HDFGroup/hdf4/archive/hdf%{version}/hdf4-hdf%{version}.tar.gz
-# Source0-md5:	9789b5ad3341ce5f25fac1de231e2608
+# Source0-md5:	90106abf6d5bd6dcc3649cdfa1c8fad4
 Source1:	http://www.mif.pg.gda.pl/homepages/ankry/man-PLD/%{name}-man-pages.tar.bz2
 # Source1-md5:	607df78cacc131b37dfdb443e61e789a
 Patch0:		%{name}-shared.patch
@@ -36,7 +36,7 @@ BuildRequires:	zlib-devel >= 1.1.4
 %{?with_szip:Requires:	libaec-szip >= 1.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		javaver	4.2.17-1
+%define		javaver	%{version}
 
 %description
 HDF is a multi-object file format that facilitates the transfer of
@@ -210,15 +210,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc COPYING README.md release_notes/{HISTORY,RELEASE,bugs_fixed,misc_docs}.txt
 %attr(755,root,root) %{_libdir}/libdf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdf.so.0
+%ghost %{_libdir}/libdf.so.0
 %attr(755,root,root) %{_libdir}/libmfhdf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmfhdf.so.0
+%ghost %{_libdir}/libmfhdf.so.0
 %{_libdir}/libhdf4.settings
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libdf.so
-%attr(755,root,root) %{_libdir}/libmfhdf.so
+%{_libdir}/libdf.so
+%{_libdir}/libmfhdf.so
 %{_libdir}/libdf.la
 %{_libdir}/libmfhdf.la
 %{_includedir}/hdf
@@ -287,8 +287,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n java-hdf
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libhdf_java.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libhdf_java.so.0
-%attr(755,root,root) %{_libdir}/libhdf_java.so
+%ghost %{_libdir}/libhdf_java.so.0
+%{_libdir}/libhdf_java.so
 %{_javadir}/jarhdf-%{javaver}.jar
 %{_javadir}/jarhdf.jar
 
